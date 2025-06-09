@@ -31,12 +31,12 @@ const PeoplePage = () => {
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
-      <h2 className="text-2xl font-bold mb-4">⭐ Pessoas Favoritadas</h2>
+      <h2 className="text-2xl font-bold mb-4">⭐ Favorite People</h2>
 
       {loading ? (
-        <p>Carregando favoritos...</p>
+        <p>Loading favorites...</p>
       ) : favorites.length === 0 ? (
-        <p className="text-gray-500">Nenhuma pessoa favoritada ainda.</p>
+        <p className="text-gray-500">No people favorited yet.</p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {favorites.map((fav) => (

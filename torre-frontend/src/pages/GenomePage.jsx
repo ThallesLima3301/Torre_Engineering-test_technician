@@ -26,25 +26,25 @@ const GenomePage = () => {
 
   return (
     <div className="p-6 max-w-3xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">Buscar Genome</h1>
+      <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">Searches Genome</h1>
 
       <div className="flex gap-4 mb-6">
         <input
           type="text"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          placeholder="Digite o username"
+          placeholder="Enter username"
           className="border border-gray-300 p-2 rounded w-full"
         />
         <button
           onClick={fetchGenome}
           className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition"
         >
-          Buscar
+          Search
         </button>
       </div>
 
-      {loading && <p className="text-gray-500">🔄 Buscando genome...</p>}
+      {loading && <p className="text-gray-500">🔄 Searches genome...</p>}
       {error && <p className="text-red-500">❌ {error}</p>}
 
       {genome && (
@@ -66,7 +66,7 @@ const GenomePage = () => {
           {/* Skills */}
           {genome.strengths && (
             <div className="mt-4">
-              <h3 className="text-lg font-semibold mb-2">Skills principais</h3>
+              <h3 className="text-lg font-semibold mb-2">Main skills</h3>
               <ul className="list-disc ml-6 text-gray-700">
                 {genome.strengths.slice(0, 5).map((skill, idx) => (
                   <li key={idx}>{skill.name}</li>

@@ -29,8 +29,8 @@ async function searchJobs(term = 'developer', offset = 0, limit = 10) {
     {
       headers: {
         'Content-Type': 'application/json',
-        'User-Agent': 'Mozilla/5.0', // <- importante
-        'Accept-Encoding': 'gzip, deflate, br' // <- previne erros de decodificação
+        'User-Agent': 'Mozilla/5.0', 
+        'Accept-Encoding': 'gzip, deflate, br' 
       }
     }
   );

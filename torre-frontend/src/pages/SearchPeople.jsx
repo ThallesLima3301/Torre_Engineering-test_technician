@@ -45,9 +45,13 @@ const SearchPeople = () => {
           headline: person.professionalHeadline
         }
       });
-      alert('⭐ Perfil favoritado com sucesso!');
+      alert(`⭐ Perfil @${person.username} favorite successfully!`);
     } catch (err) {
-      console.error('Erro ao favoritar pessoa:', err);
+      if (err.response?.status === 400) {
+        alert(`⚠️ O perfil @${person.username} Are already in our favorites.`);
+      } else {
+        console.error('Erro ao favoritar pessoa:', err);
+      }
     }
   };
 

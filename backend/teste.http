@@ -1,4 +1,5 @@
-### Teste Torre API - Buscar Vagas
+### Teste Torre API - Search Jobs
+
 POST https://search.torre.co/opportunities/_search
 Content-Type: application/json
 
@@ -13,7 +14,8 @@ Content-Type: application/json
 
 
 
-### 🧬 Buscar genome de um usuário
+### 🧬 Search for a user's genome
+
 
 POST https://search.torre.co/opportunities/_search
 Content-Type: application/json
@@ -27,20 +29,19 @@ Content-Type: application/json
 }
 
 
-### 🧬 Buscar genome de um usuário
-GET http://localhost:3001/api/torre/genome/danielenriqueleonsorzano
+### 🧬 Search for a user's genome
+GET http://localhost:3001/api/torre/genome/renanpeixotox
 
-### 🧬 Buscar genome de um usuário
+### 🧬 Search for a user's genome
 GET http://localhost:3001/api/torre/genome/thalleslima
 
 
-
-### Salvar favorito
+### Save favorite
 POST http://localhost:3001/api/torre/favorites
 Content-Type: application/json
 
 {
-  "userId": "user123",
+  "userId": "user12334",
   "itemId": "vaga123",
   "type": "job",
   "data": {
@@ -50,10 +51,12 @@ Content-Type: application/json
 }
 
 
-### Buscar analytics
+### Search analytics
+
 GET http://localhost:3001/api/torre/analytics
 
 
-### ❌ Genome com username inválido (espera erro)
+### ❌ Genome with invalid username (expect error)
+
 GET http://localhost:3001/api/torre/genome/usuarioinexistente123
 

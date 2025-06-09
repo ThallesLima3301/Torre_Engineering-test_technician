@@ -1,16 +1,13 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import JobsPage from './pages/JobsPage';
-import SearchPeople from './pages/SearchPeople'; // ✅ nome correto
+import SearchPeople from './pages/SearchPeople';
 import GenomePage from './pages/GenomePage';
 import PeoplePage from "./pages/PeoplePage";
 import Header from './layouts/Header';
-import Footer from './layouts/Footer'; // ✅ Footer importado
+import Footer from './layouts/Footer'; 
 import HomePage from './pages/HomePage';
 import JobDetailsPage from './pages/JobDetailsPage';
 import AnalyticsPage from './pages/AnalyticsPage';
-
-
-
 
 function App() {
   return (
