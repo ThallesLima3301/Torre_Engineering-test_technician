@@ -4,7 +4,7 @@ const JobDetailsPage = () => {
   const { state: job } = useLocation();
   const navigate = useNavigate();
 
-  if (!job) return <p className="p-6">❌ Vaga não encontrada.</p>;
+  if (!job) return <p className="p-6">❌ Vacancy not found.</p>;
 
   return (
     <div className="p-6 max-w-3xl mx-auto">
@@ -12,7 +12,7 @@ const JobDetailsPage = () => {
         onClick={() => navigate(-1)}
         className="mb-6 text-blue-600 hover:underline"
       >
-        ← Voltar
+        ← Back
       </button>
 
       <h1 className="text-3xl font-bold text-gray-800 mb-2">{job.objective}</h1>
@@ -28,7 +28,7 @@ const JobDetailsPage = () => {
       <hr className="my-6" />
 
       <div className="whitespace-pre-wrap text-gray-800 leading-relaxed">
-        {job.details || 'Nenhum detalhe adicional fornecido.'}
+        {job.details || 'No further details provided.'}
       </div>
     </div>
   );

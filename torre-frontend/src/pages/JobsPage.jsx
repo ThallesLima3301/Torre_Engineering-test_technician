@@ -9,7 +9,7 @@ const JobsPage = () => {
   const [hasMore, setHasMore] = useState(true);
   const limit = 10;
 
-  const navigate = useNavigate(); // ✅ USAR navigate
+  const navigate = useNavigate(); 
 
   const fetchJobs = async () => {
     try {
@@ -40,9 +40,9 @@ const JobsPage = () => {
 
   return (
     <div className="p-6 max-w-5xl mx-auto">
-      <h2 className="text-2xl font-bold mb-4">💼 Vagas Disponíveis</h2>
+      <h2 className="text-2xl font-bold mb-4">💼 Job Openings</h2>
 
-      {jobs.length === 0 && !loading && <p>Nenhuma vaga encontrada.</p>}
+      {jobs.length === 0 && !loading && <p>No vacancies found.</p>}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         {jobs.map((job) => (
@@ -66,14 +66,14 @@ const JobsPage = () => {
         ))}
       </div>
 
-      {loading && <p className="mt-4">🔄 Carregando vagas...</p>}
+      {loading && <p className="mt-4">🔄 Loading jobs...</p>}
 
       {hasMore && !loading && (
         <button
           onClick={handleLoadMore}
           className="mt-6 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
         >
-          Carregar mais
+         Load more
         </button>
       )}
     </div>

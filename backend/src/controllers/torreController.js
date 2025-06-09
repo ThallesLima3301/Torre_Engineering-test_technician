@@ -1,3 +1,7 @@
+
+
+//Handles logic for favoriting, analytics, and fetching genome data.
+
 const {
   searchEntities,
   getGenome,
@@ -8,7 +12,7 @@ const {
 const Search = require('../models/Search');
 const Favorite = require('../models/Favorite');
 
-// 🔍 Buscar perfis (desativado por enquanto — exige token)
+// 🔍 Search people/entities
 async function search(req, res) {
   try {
     const entities = await searchEntities(req.body);
@@ -22,7 +26,7 @@ async function search(req, res) {
   }
 }
 
-// 📄 Buscar genome de um usuário
+// 📄 Search for a user's genome
 async function genome(req, res) {
   try {
     const data = await getGenome(req.params.username);
@@ -34,7 +38,7 @@ async function genome(req, res) {
   }
 }
 
-// 💼 Buscar vagas com paginação
+// 💼 Search for jobs with pagination
 async function jobs(req, res) {
   try {
     const { term = 'developer', offset = 0, limit = 10 } = req.body;
@@ -46,6 +50,7 @@ async function jobs(req, res) {
     return res.status(err.response?.status || 500).json({ message: err.message });
   }
 }
+
 // 💱 Buscar moedas (opcional)
 async function currencies(req, res) {
   try {
@@ -57,19 +62,25 @@ async function currencies(req, res) {
   }
 }
 
-// ⭐ Salvar favorito
+// ⭐ Save favorite (com verificação de duplicata)
 async function saveFavorite(req, res) {
   try {
     const { userId, itemId, type, data } = req.body;
+
+    const exists = await Favorite.findOne({ userId, itemId, type });
+    if (exists) {
+      return res.status(400).json({ message: 'This item has already been favorited..' });
+    }
+
     const favorite = await Favorite.create({ userId, itemId, type, data });
     res.status(201).json(favorite);
   } catch (err) {
     console.error('❌ ERRO [saveFavorite]:', err.message);
-    res.status(500).json({ message: 'Erro ao salvar favorito.' });
+    res.status(500).json({ message: 'Error saving favorite.' });
   }
 }
 
-// ⭐ Buscar favoritos (por userId e tipo)
+// ⭐ Get favorites by user and type
 async function getFavorites(req, res) {
   try {
     const { userId, type } = req.query;
@@ -81,23 +92,23 @@ async function getFavorites(req, res) {
     res.json(favorites);
   } catch (err) {
     console.error('❌ ERRO [getFavorites]:', err.message);
-    res.status(500).json({ message: 'Erro ao buscar favoritos.' });
+    res.status(500).json({ message: 'Error fetching favorites.' });
   }
 }
 
-// 🗑️ Remover favorito
+// 🗑️ Remove favorite
 async function removeFavorite(req, res) {
   try {
     const { id } = req.params;
     await Favorite.findByIdAndDelete(id);
-    res.json({ message: 'Favorito removido com sucesso.' });
+    res.json({ message: 'Favorite removed successfully.' });
   } catch (err) {
     console.error('❌ ERRO [removeFavorite]:', err.message);
-    res.status(500).json({ message: 'Erro ao remover favorito.' });
+    res.status(500).json({ message: 'Error removing favorite.' });
   }
 }
 
-// 📊 Analytics: termos mais buscados
+// 📊 Analytics: most searched terms
 async function getSearchAnalytics(req, res) {
   try {
     const analytics = await Search.aggregate([

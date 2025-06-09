@@ -7,6 +7,9 @@ const PeoplePage = () => {
   const [loading, setLoading] = useState(false);
   const [term, setTerm] = useState("developer");
   const [analytics, setAnalytics] = useState([]);
+  const [favoritedIds, setFavoritedIds] = useState(new Set());
+  const [message, setMessage] = useState('');
+  const [messageUser, setMessageUser] = useState(null);
 
   const fetchPeople = async (searchTerm) => {
     setLoading(true);
@@ -23,7 +26,7 @@ const PeoplePage = () => {
 
       setProfiles(unique);
     } catch (err) {
-      console.error("Erro ao buscar perfis:", err);
+      console.error("Error fetching profiles:", err);
     } finally {
       setLoading(false);
     }
@@ -34,7 +37,7 @@ const PeoplePage = () => {
       const res = await axios.get("http://localhost:3001/api/torre/analytics");
       setAnalytics(res.data);
     } catch (err) {
-      console.error("Erro ao buscar analytics:", err);
+      console.error("Error fetching analytics:", err);
     }
   };
 
@@ -44,17 +47,30 @@ const PeoplePage = () => {
   }, []);
 
   const handleFavorite = async (person) => {
-    try {
-      await axios.post("http://localhost:3001/api/torre/favorites", {
-        userId: "usuario-teste",
-        itemId: person.username,
-        type: "profile",
-        data: person,
-      });
-      alert("Perfil favoritado!");
-    } catch (err) {
-      console.error("❌ Erro ao favoritar perfil:", err);
+    setMessageUser(person.username);
+
+    if (favoritedIds.has(person.username)) {
+      setMessage(`⚠️ O perfil @${person.username} já foi favoritado.`);
+    } else {
+      try {
+        await axios.post("http://localhost:3001/api/torre/favorites", {
+          userId: "usuario-teste",
+          itemId: person.username,
+          type: "profile",
+          data: person,
+        });
+        setFavoritedIds((prev) => new Set(prev).add(person.username));
+        setMessage(`✅ Perfil @${person.username} favoritado!`);
+      } catch (err) {
+        setMessage("❌ Erro ao favoritar o perfil.");
+        console.error("❌ Erro ao favoritar perfil:", err);
+      }
     }
+
+    setTimeout(() => {
+      setMessage('');
+      setMessageUser(null);
+    }, 3000);
   };
 
   const handleSearch = () => {
@@ -87,10 +103,10 @@ const PeoplePage = () => {
 
       {/* Resultados */}
       {loading ? (
-        <p className="text-center text-gray-500">🔄 Carregando perfis...</p>
+        <p className="text-center text-gray-500">🔄 Loading profiles...</p>
       ) : profiles.length === 0 ? (
         <p className="text-center text-gray-500">
-          Nenhum perfil encontrado para "{term}".
+          No profiles found for "{term}".
         </p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
@@ -105,20 +121,34 @@ const PeoplePage = () => {
                 alt={person.name}
                 className="w-20 h-20 rounded-full mx-auto mb-2 object-cover"
               />
-              <h3 className="text-lg font-semibold text-center">
-                {person.name}
-              </h3>
-              <p className="text-sm text-center text-gray-600">
-                @{person.username}
-              </p>
-              <div className="flex justify-center mt-2">
+              <h3 className="text-lg font-semibold text-center">{person.name}</h3>
+              <p className="text-sm text-center text-gray-600">@{person.username}</p>
+
+              <div className="flex flex-col items-center mt-2">
                 <motion.button
                   whileTap={{ scale: 0.9 }}
-                  className="text-yellow-400 hover:text-yellow-500 text-xl"
+                  className={`text-xl ${
+                    favoritedIds.has(person.username)
+                      ? "text-yellow-300"
+                      : "text-yellow-400 hover:text-yellow-500"
+                  }`}
                   onClick={() => handleFavorite(person)}
+                  disabled={favoritedIds.has(person.username)}
                 >
                   ⭐
                 </motion.button>
+
+                {messageUser === person.username && message && (
+                  <p
+                    className={`text-xs text-center mt-1 ${
+                      message.includes("✅")
+                        ? "text-green-600"
+                        : "text-red-500"
+                    }`}
+                  >
+                    {message}
+                  </p>
+                )}
               </div>
             </motion.div>
           ))}

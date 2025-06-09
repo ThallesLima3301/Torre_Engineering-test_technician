@@ -1,19 +1,22 @@
+//Contains all the main API routes.
+
 const express = require('express');
 const router = express.Router();
 const torreController = require('../controllers/torreController');
 
 // 📌 Rotas principais
-router.post('/search', torreController.search);                // (⚠️ precisa de token — inativa por enquanto)
-router.get('/genome/:username', torreController.genome);       // Genome do usuário
-router.post('/jobs', torreController.jobs);                    // Buscar vagas
-router.get('/currencies', torreController.currencies);         // Lista de moedas
+router.post('/search', torreController.search);                
+router.get('/genome/:username', torreController.genome);       // Genome do user
+router.post('/jobs', torreController.jobs);                    // Search for vacancies
+router.get('/currencies', torreController.currencies);         // Lista de moedas(n mal implementado)
 
 // ⭐ Favoritos
-router.post('/favorites', torreController.saveFavorite);       // Salvar favoritos
+router.post('/favorites', torreController.saveFavorite);       // Save favorites
+
 router.get('/favorites', torreController.getFavorites);
 
 // 📊 Analytics
-router.get('/analytics', torreController.getSearchAnalytics);  // Top termos buscados
+router.get('/analytics', torreController.getSearchAnalytics);  // Top searched terms
 
 router.delete('/favorites/:id', torreController.removeFavorite); 
 

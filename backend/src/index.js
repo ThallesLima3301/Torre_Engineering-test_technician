@@ -10,12 +10,12 @@ app.use(cors());
 app.use(express.json());
 
 app.use('/api/torre', torreRoutes);
-app.use(errorHandler); // <- middleware de erro
+app.use(errorHandler); // 
 
 const PORT = process.env.PORT || 3001;
 
 connectDB();
 
 app.listen(PORT, () => {
-  console.log(`🚀 Server rodando em http://localhost:${PORT}`);
+  console.log(`Server running at http://localhost:3001${PORT}`);
 });
