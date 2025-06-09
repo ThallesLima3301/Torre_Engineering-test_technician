@@ -1,0 +1,59 @@
+### Teste Torre API - Buscar Vagas
+POST https://search.torre.co/opportunities/_search
+Content-Type: application/json
+
+{
+  "id": { "term": "developer" },
+  "offset": 0,
+  "limit": 10,
+  "membersCloseConnections": false,
+  "penalizeOverqualified": false
+}
+
+
+
+
+### 🧬 Buscar genome de um usuário
+
+POST https://search.torre.co/opportunities/_search
+Content-Type: application/json
+
+{
+  "id": {
+    "term": "developer"
+  },
+  "membersCloseConnections": false,
+  "penalizeOverqualified": false
+}
+
+
+### 🧬 Buscar genome de um usuário
+GET http://localhost:3001/api/torre/genome/danielenriqueleonsorzano
+
+### 🧬 Buscar genome de um usuário
+GET http://localhost:3001/api/torre/genome/thalleslima
+
+
+
+### Salvar favorito
+POST http://localhost:3001/api/torre/favorites
+Content-Type: application/json
+
+{
+  "userId": "user123",
+  "itemId": "vaga123",
+  "type": "job",
+  "data": {
+    "title": "Desenvolvedor Backend",
+    "location": "Remoto"
+  }
+}
+
+
+### Buscar analytics
+GET http://localhost:3001/api/torre/analytics
+
+
+### ❌ Genome com username inválido (espera erro)
+GET http://localhost:3001/api/torre/genome/usuarioinexistente123
+
