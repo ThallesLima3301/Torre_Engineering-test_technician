@@ -130,7 +130,7 @@ Add unit and integration tests for both front-end and back-end.
 [readme frontend](../torre-frontend/README.md)
 
 
-## 🚀 How to Run Locally
+## 🚀 How to Run Locally!
 
 ```bash
 # Clone the repo
