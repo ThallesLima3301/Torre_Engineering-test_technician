@@ -1,0 +1,16 @@
+{
+  "errors": {
+    "internal": "Internal server error",
+    "notFound": "Resource not found",
+    "duplicate": "This item has already been favorited.",
+    "saveFavorite": "Error saving favorite.",
+    "fetchFavorites": "Error fetching favorites.",
+    "removeFavorite": "Error removing favorite.",
+    "fetchJobs": "Error fetching jobs.",
+    "fetchCurrencies": "Error fetching currencies.",
+    "analytics": "Error generating analytics."
+  },
+  "success": {
+    "favoriteRemoved": "Favorite removed successfully."
+  }
+}

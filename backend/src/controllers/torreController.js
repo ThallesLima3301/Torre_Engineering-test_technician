@@ -1,28 +1,37 @@
-
-
-//Handles logic for favoriting, analytics, and fetching genome data.
-
+const logger = require('../config/logger');
 const {
   searchEntities,
   getGenome,
   searchJobs,
-  getCurrencies
+  getCurrencies,
 } = require('../services/torreService');
 
-const Search = require('../models/Search');
-const Favorite = require('../models/Favorite');
+const {
+  logSearch,
+  getTopSearchedTerms
+} = require('../services/searchService');
+
+const {
+  isDuplicateFavorite,
+  createFavorite,
+  findFavorites,
+  deleteFavoriteById,
+} = require('../services/favoriteService');
+
+// Utilitário de fallback para mensagens
+const t = (req, key, fallback) => req.__ ? req.__(key) : fallback;
 
 // 🔍 Search people/entities
 async function search(req, res) {
   try {
     const entities = await searchEntities(req.body);
     if (req.body.text) {
-      await Search.create({ term: req.body.text, type: 'profile' });
+      await logSearch(req.body.text, 'profile');
     }
     return res.json(entities);
   } catch (err) {
-    console.error('❌ ERRO [searchEntities]:', err.message);
-    return res.status(err.response?.status || 500).json({ message: err.message });
+    logger.error(`❌ ERRO [searchEntities]: ${err.message}`);
+    return res.status(err.response?.status || 500).json({ message: t(req, 'errors.internal', 'Internal server error') });
   }
 }
 
@@ -30,11 +39,11 @@ async function search(req, res) {
 async function genome(req, res) {
   try {
     const data = await getGenome(req.params.username);
-    await Search.create({ term: req.params.username, type: 'profile' });
+    await logSearch(req.params.username, 'profile');
     return res.json(data);
   } catch (err) {
-    console.error('❌ ERRO [getGenome]:', err.message);
-    return res.status(err.response?.status || 500).json({ message: err.message });
+    logger.error(`❌ ERRO [getGenome]: ${err.message}`);
+    return res.status(err.response?.status || 500).json({ message: t(req, 'errors.internal', 'Internal server error') });
   }
 }
 
@@ -43,44 +52,44 @@ async function jobs(req, res) {
   try {
     const { term = 'developer', offset = 0, limit = 10 } = req.body;
     const data = await searchJobs(term, offset, limit);
-    await Search.create({ term, type: 'job' });
+    await logSearch(term, 'job');
     return res.json(data);
   } catch (err) {
-    console.error('❌ ERRO [searchJobs]:', err.message);
-    return res.status(err.response?.status || 500).json({ message: err.message });
+    logger.error(`❌ ERRO [searchJobs]: ${err.message}`);
+    return res.status(err.response?.status || 500).json({ message: t(req, 'errors.fetchJobs', 'Error fetching jobs') });
   }
 }
 
-// 💱 Buscar moedas (opcional)
+// 💱 Currencies
 async function currencies(req, res) {
   try {
     const data = await getCurrencies();
     return res.json(data);
   } catch (err) {
-    console.error('❌ ERRO [getCurrencies]:', err.message);
-    return res.status(500).json({ message: 'Erro ao buscar moedas.' });
+    logger.error(`❌ ERRO [getCurrencies]: ${err.message}`);
+    return res.status(500).json({ message: t(req, 'errors.fetchCurrencies', 'Error fetching currencies') });
   }
 }
 
-// ⭐ Save favorite (com verificação de duplicata)
+// ⭐ Save favorite
 async function saveFavorite(req, res) {
   try {
     const { userId, itemId, type, data } = req.body;
 
-    const exists = await Favorite.findOne({ userId, itemId, type });
+    const exists = await isDuplicateFavorite({ userId, itemId, type });
     if (exists) {
-      return res.status(400).json({ message: 'This item has already been favorited..' });
+      return res.status(400).json({ message: t(req, 'errors.duplicate', 'Item already favorited') });
     }
 
-    const favorite = await Favorite.create({ userId, itemId, type, data });
+    const favorite = await createFavorite({ userId, itemId, type, data });
     res.status(201).json(favorite);
   } catch (err) {
-    console.error('❌ ERRO [saveFavorite]:', err.message);
-    res.status(500).json({ message: 'Error saving favorite.' });
+    logger.error(`❌ ERRO [saveFavorite]: ${err.message}`);
+    res.status(500).json({ message: t(req, 'errors.saveFavorite', 'Error saving favorite') });
   }
 }
 
-// ⭐ Get favorites by user and type
+// ⭐ Get favorites
 async function getFavorites(req, res) {
   try {
     const { userId, type } = req.query;
@@ -88,11 +97,11 @@ async function getFavorites(req, res) {
     if (userId) query.userId = userId;
     if (type) query.type = type;
 
-    const favorites = await Favorite.find(query);
+    const favorites = await findFavorites(query);
     res.json(favorites);
   } catch (err) {
-    console.error('❌ ERRO [getFavorites]:', err.message);
-    res.status(500).json({ message: 'Error fetching favorites.' });
+    logger.error(`❌ ERRO [getFavorites]: ${err.message}`);
+    res.status(500).json({ message: t(req, 'errors.fetchFavorites', 'Error fetching favorites') });
   }
 }
 
@@ -100,26 +109,23 @@ async function getFavorites(req, res) {
 async function removeFavorite(req, res) {
   try {
     const { id } = req.params;
-    await Favorite.findByIdAndDelete(id);
-    res.json({ message: 'Favorite removed successfully.' });
+    await deleteFavoriteById(id);
+    res.json({ message: t(req, 'success.favoriteRemoved', 'Favorite removed successfully') });
   } catch (err) {
-    console.error('❌ ERRO [removeFavorite]:', err.message);
-    res.status(500).json({ message: 'Error removing favorite.' });
+    logger.error(`❌ ERRO [removeFavorite]: ${err.message}`);
+    res.status(500).json({ message: t(req, 'errors.removeFavorite', 'Error removing favorite') });
   }
 }
 
-// 📊 Analytics: most searched terms
+// 📊 Analytics
 async function getSearchAnalytics(req, res) {
   try {
-    const analytics = await Search.aggregate([
-      { $group: { _id: '$term', count: { $sum: 1 } } },
-      { $sort: { count: -1 } },
-      { $limit: 10 }
-    ]);
+    const limit = parseInt(req.query.limit) || 10;
+    const analytics = await getTopSearchedTerms(limit);
     res.json(analytics);
   } catch (err) {
-    console.error('❌ ERRO [analytics]:', err.message);
-    res.status(500).json({ message: 'Erro ao gerar analytics.' });
+    logger.error(`❌ ERRO [analytics]: ${err.message}`);
+    res.status(500).json({ message: t(req, 'errors.analytics', 'Error fetching analytics') });
   }
 }
 
@@ -131,5 +137,5 @@ module.exports = {
   saveFavorite,
   getFavorites,
   removeFavorite,
-  getSearchAnalytics
+  getSearchAnalytics,
 };
