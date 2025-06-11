@@ -27,7 +27,7 @@ The test required building a full-stack application using the public APIs of [To
 - Mongoose
 
 **Deployment:**
-- Vercel (Frontend)
+- I can't Vercel (Frontend)
 - Render (Backend)
 
 ---
@@ -79,7 +79,7 @@ It allows users to:
 
 I chose this approach to showcase real-world full-stack features: integration with public APIs, persistent data storage (MongoDB), UI feedback, and analytics – while keeping the app simple and clean.
 
-🧱 How is the project structured and architected?
+# 🧱 How is the project structured and architected?
 Back-end (Node.js + Express + MongoDB):
 
 routes/torreRoutes.js: Handles all API endpoints.
@@ -104,8 +104,11 @@ Framer Motion: Adds animations to buttons and cards.
 
 TailwindCSS: Used for responsive and modern UI design.
 
-🧩 Is there anything I would like to improve?
+# 🧩 Is there anything I would like to improve?
+
 Yes, some areas that could be improved with more time:
+
+Given more time, I would have Added Vercel deployment for live demos and faster hosting
 
 Add authentication (JWT) to handle real user sessions.
 
@@ -125,6 +128,7 @@ Add unit and integration tests for both front-end and back-end.
 [readme backend](../backend/readme.md)
 
 [readme frontend](../torre-frontend/README.md)
+
 
 ## 🚀 How to Run Locally
 

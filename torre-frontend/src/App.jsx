@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import JobsPage from './pages/JobsPage';
 import SearchPeople from './pages/SearchPeople';
 import GenomePage from './pages/GenomePage';
-import PeoplePage from "./pages/PeoplePage";
+import FavoritePeoplePage from "./pages/PeoplePage";
 import Header from './layouts/Header';
 import Footer from './layouts/Footer'; 
 import HomePage from './pages/HomePage';
@@ -19,7 +19,7 @@ function App() {
             <Route path="/jobs" element={<JobsPage />} />
             <Route path="/search" element={<SearchPeople />} />
             <Route path="/genome/:username" element={<GenomePage />} />
-            <Route path="/people" element={<PeoplePage />} />
+            <Route path="/people" element={<FavoritePeoplePage />} />
             <Route path="/" element={<HomePage />} />     
             <Route path="/job/:id" element={<JobDetailsPage />} />
             <Route path="/analytics" element={<AnalyticsPage />} />

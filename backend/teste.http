@@ -14,7 +14,7 @@ Content-Type: application/json
 
 
 
-### 🧬 Search for a user's genome
+### 🧬 Search for a user's opportunities
 
 
 POST https://search.torre.co/opportunities/_search
@@ -41,7 +41,7 @@ POST http://localhost:3001/api/torre/favorites
 Content-Type: application/json
 
 {
-  "userId": "user12334",
+  "userId": "user1232d3G33144",
   "itemId": "vaga123",
   "type": "job",
   "data": {
@@ -60,3 +60,33 @@ GET http://localhost:3001/api/torre/analytics
 
 GET http://localhost:3001/api/torre/genome/usuarioinexistente123
 
+
+###
+POST https://torre-engineering-test-technician.onrender.com/api/torre/search
+Content-Type: application/json
+
+{
+  "criteria": {
+    "text": "developer"
+  },
+  "limit": 5
+}
+
+### limit api
+curl http://localhost:3001/api/torre/analytics?limit=5
+
+
+
+### 📊 Analytics
+GET http://localhost:3001/api/torre/analytics
+
+
+### 🗑️ Delete Favorite
+DELETE http://localhost:3001/api/torre/favorites/665fe4573a0b66b3d71d1f88
+
+###
+GET http://localhost:3001/api/health
+###
+GET http://localhost:3001/api/version
+###
+curl -H "Accept-Language: en" http://localhost:3001/api/torre/favorites

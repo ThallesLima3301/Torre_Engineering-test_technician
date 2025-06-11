@@ -1,14 +1,15 @@
-//Defines the schema for saved favorites, with a unique index to prevent duplicates.
-
-// src/models/Favorite.js
 const mongoose = require('mongoose');
 
 const FavoriteSchema = new mongoose.Schema({
-  userId: String, 
-  itemId: String, 
-  type: { type: String, enum: ['job', 'profile'] },
-  data: Object,
-  savedAt: { type: Date, default: Date.now }
-});
+  userId: { type: String, required: true },
+  itemId: { type: String, required: true },
+  type: { type: String, required: true },
+  data: {
+    name: String,
+    username: String,
+    picture: String,
+    headline: String
+  }
+}, { timestamps: true });
 
 module.exports = mongoose.model('Favorite', FavoriteSchema);
