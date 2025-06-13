@@ -112,3 +112,14 @@ Content-Type: application/json
   "criteria": { "text": "developer" },
   "limit": 10
 }
+
+
+###
+POST http://localhost:3001/api/torre/jobs
+Content-Type: application/json
+
+{
+  "term": "developer",
+  "offset": 0,
+  "limit": 10
+}

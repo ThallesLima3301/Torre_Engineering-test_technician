@@ -35,7 +35,7 @@ async function searchJobs(term = 'developer', offset = 0, limit = 10) {
     }
   );
 
-  return response.data; // 🔄 Aqui você retorna o objeto inteiro, não só os resultados
+  return response.data; 
 }
 
 
