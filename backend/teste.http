@@ -102,3 +102,13 @@ Content-Type: application/json
   },
   "limit": 10
 }
+
+
+###
+POST https://torre-engineering-test-technician-1.onrender.com/api/torre/search
+Content-Type: application/json
+
+{
+  "criteria": { "text": "developer" },
+  "limit": 10
+}

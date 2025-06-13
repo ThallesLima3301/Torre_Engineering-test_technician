@@ -1,8 +1,8 @@
 const logger = require('../config/logger');
+const axios = require('axios');
 const {
   searchEntities,
   getGenome,
-  searchJobs,
   getCurrencies,
 } = require('../services/torreService');
 
@@ -50,10 +50,18 @@ async function genome(req, res) {
 // 💼 Search for jobs with pagination
 async function jobs(req, res) {
   try {
-    const { term = 'developer', offset = 0, limit = 10 } = req.body;
-    const data = await searchJobs(term, offset, limit);
-    await logSearch(term, 'job');
-    return res.json(data);
+    const { criteria, offset = 0, limit = 10 } = req.body;
+
+    const response = await axios.post('https://search.torre.co/opportunities/_search', {
+      id: { term: criteria?.text || '' },
+      limit,
+      offset,
+      membersCloseConnections: false,
+      penalizeOverqualified: false,
+    });
+
+    await logSearch(criteria?.text || '', 'job');
+    return res.json(response.data.results || []);
   } catch (err) {
     logger.error(`❌ ERRO [searchJobs]: ${err.message}`);
     return res.status(err.response?.status || 500).json({ message: t(req, 'errors.fetchJobs', 'Error fetching jobs') });

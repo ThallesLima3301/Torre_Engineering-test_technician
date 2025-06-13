@@ -15,7 +15,7 @@ const GenomePage = () => {
 
     try {
       const res = await api.get(`/api/torre/genome/${username}`);
-      const data = await res.json();
+      const data = res.data;
 
       if (!res.ok) throw new Error(data.message || 'Erro ao buscar perfil');
       setGenome(data);
