@@ -14,14 +14,16 @@ const JobsPage = () => {
   const loadJobs = async () => {
     setLoading(true);
     try {
-      const res = await searchJobs({ term: 'developer' }, limit, offset);
+      const res = await searchJobs({ text: 'developer' }, limit, offset);
       const data = Array.isArray(res.data) ? res.data : res.data.results || [];
 
+      if (data.length < limit) setHasMore(false);
 
-      if (data.length < limit) {
-        setHasMore(false);
-      }
-      setJobs(prev => [...prev, ...data]);
+      // 🔍 Deduplicar vagas pelo id
+      const combined = [...jobs, ...data];
+      const uniqueJobs = Array.from(new Map(combined.map(job => [job.id, job])).values());
+
+      setJobs(uniqueJobs);
     } catch (err) {
       console.error('❌ Error fetching jobs:', err);
     } finally {
@@ -47,9 +49,9 @@ const JobsPage = () => {
       {jobs.length === 0 && !loading && <p>No vacancies found.</p>}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-        {jobs.map(job => (
+        {jobs.map((job, index) => (
           <div
-            key={job.id}
+            key={`${job.id}-${index}`} // ✅ Garante chave única
             onClick={() => navigate(`/job/${job.id}`, { state: job })}
             className="bg-white dark:bg-gray-800 shadow p-4 rounded cursor-pointer hover:shadow-lg transition"
           >

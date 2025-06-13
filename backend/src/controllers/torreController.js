@@ -1,8 +1,8 @@
 const logger = require('../config/logger');
-const axios = require('axios');
 const {
   searchEntities,
   getGenome,
+  searchJobs,
   getCurrencies,
 } = require('../services/torreService');
 
@@ -18,7 +18,6 @@ const {
   deleteFavoriteById,
 } = require('../services/favoriteService');
 
-// Utilitário de fallback para mensagens
 const t = (req, key, fallback) => req.__ ? req.__(key) : fallback;
 
 // 🔍 Search people/entities
@@ -47,26 +46,27 @@ async function genome(req, res) {
   }
 }
 
-// 💼 Search for jobs with pagination
+// 💼 Search for jobs with pagination — ✅ CORRIGIDO AQUI
 async function jobs(req, res) {
   try {
-    const { criteria, offset = 0, limit = 10 } = req.body;
+    const { criteria = {}, offset = 0, limit = 10 } = req.body;
 
-    const response = await axios.post('https://search.torre.co/opportunities/_search', {
-      id: { term: criteria?.text || '' },
-      limit,
-      offset,
-      membersCloseConnections: false,
-      penalizeOverqualified: false,
-    });
+    const term = criteria.text || 'developer';
 
-    await logSearch(criteria?.text || '', 'job');
-    return res.json({ results: response.data.results || [] });
+    const response = await searchJobs({ text: term }, offset, limit); // ← Aqui é seguro
+
+    await logSearch(term, 'job');
+
+    return res.json({ results: response.results || [] });
   } catch (err) {
-    logger.error(`❌ ERRO [searchJobs]: ${err.message}`);
-    return res.status(err.response?.status || 500).json({ message: t(req, 'errors.fetchJobs', 'Error fetching jobs') });
+    console.error('❌ ERRO COMPLETO:', err);
+    return res.status(err.response?.status || 500).json({
+      message: 'Erro interno ao buscar vagas',
+    });
   }
 }
+
+
 
 // 💱 Currencies
 async function currencies(req, res) {

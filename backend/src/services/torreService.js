@@ -5,10 +5,25 @@ const BASE_TORRE = 'https://torre.ai/api';
 const BASE_SEARCH = 'https://search.torre.co';
 
 // ⚠️ Desativado (exige autenticação)
-async function searchEntities(criteria) {
-  console.warn('⚠️ searchEntities desativado. Esta função requer autenticação.');
-  return [];
+async function searchEntities(criteria = {}) {
+  const term = criteria.text || 'developer';
+  const response = await axios.post(
+    'https://search.torre.co/people/_search',
+    {
+      name: { term },
+      offset: 0,
+      limit: 10
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        'User-Agent': 'Mozilla/5.0',
+      }
+    }
+  );
+  return response.data.results || []; // deve retornar um array
 }
+
 
 // ✅ Buscar genome de usuário (sem token)
 async function getGenome(username) {
@@ -16,7 +31,10 @@ async function getGenome(username) {
   return response.data;
 }
 
-async function searchJobs(term = 'developer', offset = 0, limit = 10) {
+// ✅ Buscar vagas com base em critérios
+async function searchJobs(criteria = {}, offset = 0, limit = 10) {
+  const term = criteria.text || 'developer';
+
   const response = await axios.post(
     `${BASE_SEARCH}/opportunities/_search`,
     {
@@ -35,9 +53,8 @@ async function searchJobs(term = 'developer', offset = 0, limit = 10) {
     }
   );
 
-  return response.data; 
+  return response.data;
 }
-
 
 // 🪙 Buscar moedas (opcional)
 async function getCurrencies() {

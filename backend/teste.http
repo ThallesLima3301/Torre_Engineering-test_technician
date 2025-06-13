@@ -4,7 +4,7 @@ POST https://search.torre.co/opportunities/_search
 Content-Type: application/json
 
 {
-  "id": { "term": "developer" },
+  "id": { "term": "devenloper" },
   "offset": 0,
   "limit": 10,
   "membersCloseConnections": false,
@@ -41,7 +41,7 @@ POST http://localhost:3001/api/torre/favorites
 Content-Type: application/json
 
 {
-  "userId": "user1232d3G33144",
+  "userId": "user12323d3G33144",
   "itemId": "vaga123",
   "type": "job",
   "data": {
@@ -61,19 +61,6 @@ GET http://localhost:3001/api/torre/analytics
 GET http://localhost:3001/api/torre/genome/usuarioinexistente123
 
 
-###
-POST https://torre-engineering-test-technician.onrender.com/api/torre/search
-Content-Type: application/json
-
-{
-  "criteria": {
-    "text": "developer"
-  },
-  "limit": 5
-}
-
-### limit api
-curl http://localhost:3001/api/torre/analytics?limit=5
 
 
 
@@ -85,41 +72,13 @@ GET http://localhost:3001/api/torre/analytics
 DELETE http://localhost:3001/api/torre/favorites/665fe4573a0b66b3d71d1f88
 
 ###
-GET http://localhost:3001/api/health
-###
-GET http://localhost:3001/api/version
-###
-curl -H "Accept-Language: en" http://localhost:3001/api/torre/favorites
-
-
-###
-POST https://torre-engineering-test-technician-1.onrender.com/api/torre/search
+POST https://search.torre.co/opportunities/_search
 Content-Type: application/json
 
 {
-  "criteria": {
-    "text": "developer"
-  },
-  "limit": 10
-}
-
-
-###
-POST https://torre-engineering-test-technician-1.onrender.com/api/torre/search
-Content-Type: application/json
-
-{
-  "criteria": { "text": "developer" },
-  "limit": 10
-}
-
-
-###
-POST http://localhost:3001/api/torre/jobs
-Content-Type: application/json
-
-{
-  "term": "developer",
+  "id": { "term": "developer" },
   "offset": 0,
-  "limit": 10
+  "limit": 10,
+  "membersCloseConnections": false,
+  "penalizeOverqualified": false
 }
