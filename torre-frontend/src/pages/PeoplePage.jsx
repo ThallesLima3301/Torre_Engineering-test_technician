@@ -1,6 +1,8 @@
 // src/pages/PeoplePage.jsx
 import { useEffect, useState } from "react";
 import axios from "axios";
+import api from '../services/api';
+
 
 const PeoplePage = () => {
   const [favorites, setFavorites] = useState([]);
@@ -8,7 +10,9 @@ const PeoplePage = () => {
 
   const fetchFavorites = async () => {
     try {
-      const res = await axios.get("http://localhost:3001/api/torre/favorites?userId=guest&type=profile");
+      const res = await api.get("/api/torre/favorites", {
+        params: { userId: 'guest', type: 'profile' }
+      });
       setFavorites(res.data);
     } catch (err) {
       console.error("Erro ao buscar favoritos:", err);
@@ -19,7 +23,7 @@ const PeoplePage = () => {
 
   const handleRemove = async (id) => {
     try {
-      await axios.delete(`http://localhost:3001/api/torre/favorites/${id}`);
+      await api.delete(`/api/torre/favorites/${id}`);
       setFavorites((prev) => prev.filter((f) => f._id !== id));
     } catch (err) {
       console.error("Erro ao remover favorito:", err);
