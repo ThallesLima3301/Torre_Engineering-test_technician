@@ -61,7 +61,7 @@ async function jobs(req, res) {
     });
 
     await logSearch(criteria?.text || '', 'job');
-    return res.json(response.data.results || []);
+    return res.json({ results: response.data.results || [] });
   } catch (err) {
     logger.error(`❌ ERRO [searchJobs]: ${err.message}`);
     return res.status(err.response?.status || 500).json({ message: t(req, 'errors.fetchJobs', 'Error fetching jobs') });

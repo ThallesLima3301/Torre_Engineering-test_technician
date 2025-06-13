@@ -15,7 +15,8 @@ const JobsPage = () => {
     setLoading(true);
     try {
       const res = await searchJobs({ term: 'developer' }, limit, offset);
-      const data = res.data;
+      const data = Array.isArray(res.data) ? res.data : res.data.results || [];
+
 
       if (data.length < limit) {
         setHasMore(false);
