@@ -1,6 +1,5 @@
-// src/services/torreService.js
-
 import api from './api';
+import { TORRE_ENDPOINTS } from '../constants/endpoints';
 
 /**
  * Search job opportunities via your back-end proxy.
@@ -15,7 +14,7 @@ export function searchJobs(criteria, limit, offset) {
   if (typeof offset === 'number') {
     payload.offset = offset;
   }
-  return api.post('/api/torre/jobs', payload);
+  return api.post(TORRE_ENDPOINTS.SEARCH_JOBS, payload);
 }
 
 /**
@@ -25,7 +24,7 @@ export function searchJobs(criteria, limit, offset) {
  * @returns {Promise<Object>} Axios response containing the job details.
  */
 export function fetchJobDetails(jobId) {
-  return api.get(`/api/torre/jobs/${jobId}`);
+  return api.get(`${TORRE_ENDPOINTS.SEARCH_JOBS}/${jobId}`);
 }
 
 /**
@@ -35,7 +34,7 @@ export function fetchJobDetails(jobId) {
  * @returns {Promise<Object>} Axios response containing the genome data.
  */
 export function fetchGenome(username) {
-  return api.get(`/api/torre/genome/bios/${username}`);
+  return api.get(`${TORRE_ENDPOINTS.GENOME}/bios/${username}`);
 }
 
 /**
@@ -46,7 +45,7 @@ export function fetchGenome(username) {
  * @returns {Promise<Object[]>} Axios response with an array of favorites.
  */
 export function fetchFavorites(userId = 'guest', type = 'profile') {
-  return api.get('/api/torre/favorites', {
+  return api.get(TORRE_ENDPOINTS.FAVORITES, {
     params: { userId, type },
   });
 }
@@ -56,11 +55,11 @@ export function fetchFavorites(userId = 'guest', type = 'profile') {
  *
  * @param {string} userId
  * @param {'job' | 'profile'} type
- * @param {Object} item - The item to favorite (must include name, username, etc.).
+ * @param {Object} item - The item to favorite.
  * @returns {Promise<Object>} Axios response from the server.
  */
 export function addFavorite(userId = 'guest', type, item) {
-  return api.post('/api/torre/favorites', {
+  return api.post(TORRE_ENDPOINTS.FAVORITES, {
     userId,
     itemId: item.username || item.id || item._id,
     type,
@@ -80,7 +79,7 @@ export function addFavorite(userId = 'guest', type, item) {
  * @returns {Promise<void>} Axios response.
  */
 export function removeFavorite(favoriteId) {
-  return api.delete(`/api/torre/favorites/${favoriteId}`);
+  return api.delete(`${TORRE_ENDPOINTS.FAVORITES}/${favoriteId}`);
 }
 
 /**
@@ -89,5 +88,5 @@ export function removeFavorite(favoriteId) {
  * @returns {Promise<Object[]>} Axios response with analytics data.
  */
 export function fetchAnalytics() {
-  return api.get('/api/torre/analytics');
+  return api.get(TORRE_ENDPOINTS.ANALYTICS);
 }

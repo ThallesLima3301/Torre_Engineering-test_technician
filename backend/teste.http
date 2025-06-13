@@ -90,3 +90,15 @@ GET http://localhost:3001/api/health
 GET http://localhost:3001/api/version
 ###
 curl -H "Accept-Language: en" http://localhost:3001/api/torre/favorites
+
+
+###
+POST https://torre-engineering-test-technician-1.onrender.com/api/torre/search
+Content-Type: application/json
+
+{
+  "criteria": {
+    "text": "developer"
+  },
+  "limit": 10
+}
