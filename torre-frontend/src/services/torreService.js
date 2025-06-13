@@ -4,17 +4,17 @@ import { TORRE_ENDPOINTS } from '../constants/endpoints';
 /**
  * Search job opportunities via your back-end proxy.
  *
- * @param {Object} criteria - The search criteria object (e.g. { term: 'developer' }).
+ * @param {string} term - The search term (e.g. 'developer').
  * @param {number} limit - Maximum number of results to return.
  * @param {number} [offset] - Offset for pagination (optional).
  * @returns {Promise<Object>} Axios response containing the list of jobs.
  */
-export function searchJobs(criteria, limit, offset) {
-  const payload = { criteria, limit };
-  if (typeof offset === 'number') {
-    payload.offset = offset;
-  }
-  return api.post(TORRE_ENDPOINTS.SEARCH_JOBS, payload);
+export async function searchJobs(term = 'developer', limit = 10, offset = 0) {
+  return api.post('/api/torre/jobs', {
+    term,
+    offset,
+    limit
+  });
 }
 
 /**

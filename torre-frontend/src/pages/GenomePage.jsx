@@ -15,12 +15,12 @@ const GenomePage = () => {
 
     try {
       const res = await api.get(`/api/torre/genome/${username}`);
-      const data = res.data;
-
-      if (!res.ok) throw new Error(data.message || 'Erro ao buscar perfil');
-      setGenome(data);
+      setGenome(res.data);
     } catch (err) {
-      setError(err.message);
+      const message =
+        err.response?.data?.message || 'Erro ao buscar perfil';
+      setError(message);
+      console.error('❌ Erro ao buscar genome:', err);
     } finally {
       setLoading(false);
     }
@@ -52,7 +52,6 @@ const GenomePage = () => {
 
       {genome?.person && (
         <div className="mt-6 bg-white dark:bg-gray-800 shadow-xl rounded-lg p-6 text-left">
-          {/* Foto e nome */}
           <div className="flex items-center gap-4 mb-4">
             <img
               src={genome.person.picture}
@@ -61,12 +60,13 @@ const GenomePage = () => {
             />
             <div>
               <h2 className="text-xl font-bold">{genome.person.name}</h2>
-              <p className="text-gray-600 dark:text-gray-400">{genome.person.professionalHeadline}</p>
+              <p className="text-gray-600 dark:text-gray-400">
+                {genome.person.professionalHeadline}
+              </p>
               <p className="text-sm text-gray-400">Username: {genome.person.username}</p>
             </div>
           </div>
 
-          {/* Skills */}
           {genome.strengths?.length > 0 && (
             <div className="mt-4">
               <h3 className="text-lg font-semibold mb-2">Main skills</h3>

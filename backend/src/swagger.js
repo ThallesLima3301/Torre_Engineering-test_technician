@@ -14,7 +14,7 @@ const options = {
       {
         url:
           process.env.NODE_ENV === 'production'
-            ? 'https://torre-engineering-test-technician.onrender.com'
+            ? 'https://torre-engineering-test-technician-1.onrender.com'
             : 'http://localhost:3001',
       },
     ],

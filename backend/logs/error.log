@@ -1,0 +1,8 @@
+[2025-06-13 13:41:00] ERROR: ❌ ERRO [getGenome]: Request failed with status code 404
+[2025-06-13 14:00:48] ERROR: ❌ ERRO [searchJobs]: Request failed with status code 401
+[2025-06-13 14:00:48] ERROR: ❌ ERRO [searchJobs]: Request failed with status code 401
+[2025-06-13 14:00:49] ERROR: ❌ ERRO [searchJobs]: Request failed with status code 401
+[2025-06-13 14:01:15] ERROR: ❌ ERRO [searchJobs]: Request failed with status code 401
+[2025-06-13 14:01:15] ERROR: ❌ ERRO [searchJobs]: Request failed with status code 401
+[2025-06-13 14:01:57] ERROR: ❌ ERRO [searchJobs]: Search validation failed: term: Path `term` is required.
+[2025-06-13 14:01:58] ERROR: ❌ ERRO [searchJobs]: Search validation failed: term: Path `term` is required.

@@ -1,7 +1,8 @@
 // src/pages/SearchPeople.jsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { searchJobs, addFavorite } from '../services/torreService';
+import { addFavorite } from '../services/torreService';
+import api from '../services/api';
 import { motion } from 'framer-motion';
 
 const SearchPeople = () => {
@@ -10,21 +11,23 @@ const SearchPeople = () => {
   const [loading, setLoading] = useState(false);
   const [favoritedIds, setFavoritedIds] = useState(new Set());
   const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const handleSearch = async () => {
     setLoading(true);
-    setPeople([]);
+    setError('');
     try {
-      // use your backend proxy endpoint instead of calling Torre API directly
-      const res = await searchJobs({ term }, 20);
-      const allMembers = res.data.flatMap((job) => job.members || []);
-      const unique = Array.from(
-        new Map(allMembers.map((m) => [m.username, m])).values()
-      );
-      setPeople(unique);
+      const res = await api.post('/api/torre/search', { text: term });
+
+      const data = Array.isArray(res.data) ? res.data : [];
+      const flattened = data.flatMap((chunk) => chunk?.results || chunk || []);
+
+      const filtered = flattened.filter((p) => p.username && p.name);
+      setPeople(filtered);
     } catch (err) {
       console.error('Error fetching people:', err);
+      setError('❌ Erro ao buscar perfis');
     } finally {
       setLoading(false);
     }
@@ -32,16 +35,16 @@ const SearchPeople = () => {
 
   const handleFavorite = async (person) => {
     if (favoritedIds.has(person.username)) {
-      setMessage(`⚠️ @${person.username} already favorited.`);
+      setMessage(`⚠️ @${person.username} já favoritado.`);
       return;
     }
     try {
       await addFavorite('guest', 'profile', person);
       setFavoritedIds((prev) => new Set(prev).add(person.username));
-      setMessage(`✅ @${person.username} favorited!`);
+      setMessage(`✅ @${person.username} favoritado!`);
     } catch (err) {
       console.error('Error favoriting person:', err);
-      setMessage('❌ Could not favorite.');
+      setMessage('❌ Não foi possível favoritar.');
     }
     setTimeout(() => setMessage(''), 3000);
   };
@@ -67,12 +70,13 @@ const SearchPeople = () => {
         </button>
       </div>
 
+      {error && <p className="text-red-500 text-center mb-4">{error}</p>}
       {message && <p className="text-center mb-4">{message}</p>}
 
       <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-        {people.map((p) => (
+        {people.map((p, idx) => (
           <motion.div
-            key={p.username}
+            key={`${p.username}-${idx}`}
             whileHover={{ scale: 1.02 }}
             className="bg-white shadow p-4 rounded flex flex-col items-center"
           >
