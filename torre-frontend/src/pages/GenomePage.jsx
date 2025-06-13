@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import api from '../services/api';
 
 const GenomePage = () => {
   const [username, setUsername] = useState('');
@@ -13,7 +14,7 @@ const GenomePage = () => {
     setGenome(null);
 
     try {
-      const res = await fetch(`http://localhost:3001/api/torre/genome/${username}`);
+      const res = await api.get(`/api/torre/genome/${username}`);
       const data = await res.json();
 
       if (!res.ok) throw new Error(data.message || 'Erro ao buscar perfil');
