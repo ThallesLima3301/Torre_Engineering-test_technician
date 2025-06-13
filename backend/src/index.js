@@ -29,6 +29,18 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
 // ✅ Ativa internacionalização
+
+const allowedOrigins = [
+  'https://torre-engineering-test-technician-4.vercel.app', // seu front-end Vercel
+  'http://localhost:5173' // dev local
+];
+
+app.use(cors({
+  origin: allowedOrigins,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true
+}));
+
 app.use(i18n.init);
 
 setupSwagger(app);
