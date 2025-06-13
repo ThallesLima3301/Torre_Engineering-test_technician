@@ -16,7 +16,6 @@ async function getGenome(username) {
   return response.data;
 }
 
-// ✅ Buscar vagas com suporte a paginação
 async function searchJobs(term = 'developer', offset = 0, limit = 10) {
   const response = await axios.post(
     `${BASE_SEARCH}/opportunities/_search`,
@@ -36,8 +35,9 @@ async function searchJobs(term = 'developer', offset = 0, limit = 10) {
     }
   );
 
-  return response.data.results;
+  return response.data; // 🔄 Aqui você retorna o objeto inteiro, não só os resultados
 }
+
 
 // 🪙 Buscar moedas (opcional)
 async function getCurrencies() {
