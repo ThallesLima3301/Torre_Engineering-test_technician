@@ -17,7 +17,10 @@ app.use(rateLimiter);
 
 // ✅ CORS com origem controlada
 const corsOptions = {
-  origin: ['http://localhost:5173', 'https://torre-engineering-test-technician.vercel.app'],
+  origin: [
+    'http://localhost:5173',
+    'https://torre-engineering-test-technician-4.vercel.app' 
+  ],
   methods: ['GET', 'POST', 'DELETE'],
   credentials: true,
 };
