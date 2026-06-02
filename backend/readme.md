@@ -1,113 +1,72 @@
-# 🧠 TorreEngineering Backend
+# Torre Engineering Backend
 
-This is the backend for the **Torre Engineering Technical Challenge v2.1**, built with **Node.js + Express + MongoDB**. It handles API integrations with Torre.co's public endpoints and provides functionality for job search, genome retrieval, favorites management, and analytics tracking.
+Express API for the Torre Engineering technical test. It proxies Torre public data, stores favorites, and tracks search analytics.
 
----
+## Main Responsibilities
 
-## 🚀 Overview
+- Search Torre opportunities.
+- Search Torre people/profiles.
+- Fetch public genome data by username.
+- Save, list, and delete job/profile favorites.
+- Aggregate most searched terms with MongoDB.
 
-This backend exposes a RESTful API for:
+## Setup
 
-- 🔍 Searching jobs via Torre’s public search endpoint
-- 🧬 Fetching genome data for any Torre user
-- ⭐ Saving and listing favorite jobs or profiles
-- 📊 Retrieving the most searched terms for analytics
-- ⚠️ (Optional) Streaming entity search via NDJSON (disabled — requires auth)
-
----
-
-## 📁 Folder Structure
-
-![alt text](../backend/img/image.png)
-
-![alt text](../backend/img/image_1.png)
-
-
-
-Editar
-
----
-
-## ⚙️ Setup & Installation
-
-### 1. Configure Environment
-
-Copy `.env.example` to `.env` and fill in your values:
+Create `backend/.env`:
 
 ```env
 PORT=3001
 MONGO_URI=your_mongodb_connection_string
-2. Install Dependencies
-
-
-Editar
-cd backend
-npm install
-3. (Optional) Add Nodemon for Dev Mode
-
-
-Editar
-npm install --save-dev nodemon
-Then update package.json:
-
-json
-
-Editar
-"scripts": {
-  "start": "node src/index.js",
-  "dev": "nodemon src/index.js"
-}
-4. Run the Server
-
+FRONTEND_URL=http://localhost:5173
 ```
-Editar
+
+Install and run:
+
+```bash
+npm install
 npm run dev
-📌 Key Files
-src/index.js: Main Express app setup (middlewares, MongoDB, routes)
+```
 
-src/controllers/torreController.js: Request handling & DB interaction
+Run tests:
 
-src/services/torreService.js: External Torre API integrations
+```bash
+npm test
+```
 
-src/models/: MongoDB schemas for favorites and search tracking
+## Security
 
+`MONGO_URI` is required for favorites and analytics persistence, but it must be supplied as an environment variable. Never commit a real MongoDB URI to the repository.
 
-## 📌 Key Files (Detailed Overview)
+For local development, set it in `backend/.env`. For Render, set the same key in the Render service environment variables. Use a strong MongoDB Atlas password and keep Atlas Network Access as narrow as practical.
 
-| File                                  | Description |
-|---------------------------------------|-------------|
-| `src/index.js`                        | Initializes the Express app, connects to MongoDB, applies global middleware, and mounts all routes. |
-| `src/controllers/torreController.js`  | Handles HTTP requests and interacts with the database and external APIs via services. |
-| `src/services/torreService.js`        | Contains logic to integrate with Torre’s public API endpoints like job search and genome. |
-| `src/models/`                         | Includes Mongoose models for `Favorite`, `Search`, and `SearchLog`, used for storing user favorites and tracking analytics. |
-| `src/utils/parseStream.js`            | (Optional) Utility for parsing NDJSON streams from Torre (used in entity search - currently disabled). |
+## API Endpoints
 
----
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| `POST` | `/api/torre/jobs` | Searches jobs. Body: `{ "term": "developer", "offset": 0, "limit": 10 }` |
+| `POST` | `/api/torre/search` | Searches people by text. Body: `{ "text": "developer" }` |
+| `GET` | `/api/torre/genome/:username` | Fetches public genome data |
+| `POST` | `/api/torre/favorites` | Saves a favorite job or profile |
+| `GET` | `/api/torre/favorites?userId=guest&type=profile` | Lists favorites |
+| `DELETE` | `/api/torre/favorites/:id` | Deletes a favorite |
+| `GET` | `/api/torre/analytics?limit=10` | Returns top searched terms |
+| `GET` | `/api/health` | Health check |
+| `GET` | `/api/version` | App metadata |
 
-## 🔌 API Endpoints
+## Architecture
 
-| Method | Endpoint                              | Description                              |
-|--------|----------------------------------------|------------------------------------------|
-| GET    | `/api/torre/genome/:username`         | 🔬 Fetches genome (skills/traits) for a given Torre user. |
-| POST   | `/api/torre/jobs`                     | 💼 Public job search (uses Torre’s opportunities endpoint). |
-| POST   | `/api/torre/favorites`                | ⭐ Saves a job or profile to favorites in MongoDB. |
-| GET    | `/api/torre/favorites`                | 📋 Lists favorites filtered by user ID and type. |
-| DELETE | `/api/torre/favorites/:id`            | ❌ Deletes a favorite entry by its unique ID. |
-| GET    | `/api/torre/analytics`                | 📊 Retrieves most searched terms (via MongoDB aggregation). |
-| POST   | `/api/torre/search`                   | ⚠️ (Disabled) Intended for entity streaming search with NDJSON (requires auth). |
+- `src/routes`: HTTP route definitions and validation middleware.
+- `src/controllers`: Request orchestration and response shaping.
+- `src/services`: Torre API, favorites, and search analytics logic.
+- `src/models`: Mongoose schemas.
+- `src/validators`: Express Validator request contracts.
+- `__tests__`: Supertest coverage for route contracts.
 
----
+Security middleware includes rate limiting, controlled CORS origins, request validation, and Helmet security headers.
 
-## 🧪 Notes & Architecture
+## Tests Covered
 
-- ✅ **Database**: Uses **MongoDB Atlas** for remote persistence.
-- 🔐 **Authentication**: Not required — all endpoints use Torre’s **public APIs**.
-- 🔄 **Modular Design**: Follows clean separation of concerns (controllers, services, models).
-- 🧠 **Analytics**: Tracks user search terms in `SearchLog` model for insights.
-- ♻️ **Favorites**: Stores saved job or profile data with user ID reference.
-
-🧩 **Designed to work seamlessly with the TorreEngineering Frontend**.
-
-
-
-
+- Job search contract and validation.
+- Favorite creation and validation.
+- Search analytics response shape.
+- Health and version routes.

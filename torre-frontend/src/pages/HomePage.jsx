@@ -1,38 +1,68 @@
 import { Link } from 'react-router-dom';
-import Footer from '../layouts/Footer';
+
+const actions = [
+  {
+    to: '/jobs',
+    title: 'Search jobs',
+    description: 'Browse Torre opportunities with pagination and save promising roles.',
+  },
+  {
+    to: '/search',
+    title: 'Find people',
+    description: 'Search profiles, open genomes, and keep a favorites shortlist.',
+  },
+  {
+    to: '/analytics',
+    title: 'View analytics',
+    description: 'See the most searched terms collected by the backend.',
+  },
+];
 
 const HomePage = () => {
   return (
-    <div className="flex flex-col min-h-screen bg-white text-gray-900 dark:bg-gray-900 dark:text-white">
-      <div className="flex-grow text-center py-20 px-4 bg-gradient-to-b from-gray-50 to-white dark:from-gray-800 dark:to-gray-900">
-        <h1 className="text-4xl font-bold mb-4 text-gray-800 dark:text-white">Welcome to Torre Challenge</h1>
-        <p className="text-lg text-gray-600 dark:text-gray-300 mb-10">
-          Explore opportunities, discover talent, and save your favorites with ease.
+    <section className="mx-auto grid min-h-[calc(100vh-9rem)] max-w-7xl gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[1fr_420px] lg:items-center">
+      <div>
+        <p className="text-sm font-semibold uppercase tracking-wide text-blue-600 dark:text-blue-300">
+          Torre Engineering Test
         </p>
-
-        <div className="flex justify-center gap-4 flex-wrap">
-          <Link to="/jobs">
-            <button className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white px-6 py-3 rounded-lg shadow">
-              🔍 Search Jobs
-            </button>
+        <h1 className="mt-3 max-w-3xl text-4xl font-bold tracking-tight text-gray-950 dark:text-white sm:text-5xl">
+          Search opportunities, profiles, and saved Torre insights in one place.
+        </h1>
+        <p className="mt-5 max-w-2xl text-lg leading-8 text-gray-600 dark:text-gray-300">
+          This full-stack app integrates Torre search data, persistent favorites, genome lookup,
+          and lightweight analytics through a React frontend and Express backend.
+        </p>
+        <div className="mt-8 flex flex-wrap gap-3">
+          <Link
+            to="/jobs"
+            className="rounded-md bg-blue-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-blue-700"
+          >
+            Start with jobs
           </Link>
-
-          <Link to="/search">
-            <button className="bg-green-600 hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-600 text-white px-6 py-3 rounded-lg shadow">
-              👤 Search People
-            </button>
-          </Link>
-
-          <Link to="/people">
-            <button className="bg-yellow-500 hover:bg-yellow-600 dark:bg-yellow-400 dark:hover:bg-yellow-500 text-white px-6 py-3 rounded-lg shadow">
-              ⭐ Favorites
-            </button>
+          <Link
+            to="/search"
+            className="rounded-md border border-gray-300 px-5 py-3 text-sm font-semibold text-gray-800 transition hover:bg-white dark:border-gray-700 dark:text-gray-100 dark:hover:bg-gray-800"
+          >
+            Search people
           </Link>
         </div>
       </div>
 
-      <Footer />
-    </div>
+      <div className="grid gap-4">
+        {actions.map((action) => (
+          <Link
+            key={action.to}
+            to={action.to}
+            className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:border-gray-800 dark:bg-gray-900"
+          >
+            <h2 className="text-lg font-semibold text-gray-950 dark:text-white">{action.title}</h2>
+            <p className="mt-2 text-sm leading-6 text-gray-600 dark:text-gray-300">
+              {action.description}
+            </p>
+          </Link>
+        ))}
+      </div>
+    </section>
   );
 };
 

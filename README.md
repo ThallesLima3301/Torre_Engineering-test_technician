@@ -1,148 +1,182 @@
-# Torre Engineering - Technical Test v2.1
+# Torre Engineering Technical Test v2.1
 
-This repository contains my solution for the **Torre Engineering Technical Test v2.1**.
+Full-stack solution for the Torre Engineering technical test. The app lets users search Torre jobs, search people, inspect public genome data, save favorite jobs/profiles, and view search analytics.
 
-## 🧠 About the Challenge
+## Stack
 
-The test required building a full-stack application using the public APIs of [Torre](https://torre.co), showcasing both front-end and back-end engineering skills. The goal was to create a platform where users can:
-
-- Search for job opportunities
-- Search for people by skills or roles
-- View genome data of specific users
-- Save favorites (jobs and people)
-- Analyze most-searched terms through an analytics dashboard
-
-## 🛠️ Stack Used
-
-**Front-end:**
-- React (with Vite)
-- TailwindCSS
-- Framer Motion
+**Frontend**
+- React 19 with Vite
+- React Router
+- TanStack Query
+- Tailwind CSS
 - Axios
 
-**Back-end:**
-- Node.js
-- Express.js
-- MongoDB Atlas
-- Mongoose
+**Backend**
+- Node.js and Express
+- MongoDB with Mongoose
+- Express Validator
+- Swagger setup
+- Jest and Supertest
 
-**Deployment:**
-- I can't Vercel (Frontend)
-- Render (Backend)
+## Features
 
----
+- Job search through `POST /api/torre/jobs`
+- People search through `POST /api/torre/search`
+- Genome lookup through `GET /api/torre/genome/:username`
+- Favorites for both jobs and profiles
+- MongoDB aggregation for most searched terms
+- Responsive UI with dark mode, empty states, loading states, and error feedback
+- Client-side server-state caching with TanStack Query
+- Backend validation and targeted automated tests
 
-## 📋 Features
+## Screenshots
 
-- **Job Search:** Integrated Torre's opportunities API to allow keyword-based job searching.
-- **People Search:** Used Torre's opportunities endpoint to extract and deduplicate profile data.
-- **Favorites:** Users can favorite jobs and profiles (deduplicated and stored in MongoDB).
-- **Analytics:** Tracks most searched terms using MongoDB aggregations, which are shown on the UI.
-- **Genome Page:** Pulls genome information from Torre for any valid username.
-- **Responsive UI:** Built with TailwindCSS and responsive for all devices.
-- **Feedback & Alerts:** Toast messages and alerts guide the user for successful/duplicate actions.
-- **Modular Architecture:** Backend is split into routes, controllers, models, and services.
+| Home | Job search |
+| --- | --- |
+| ![Home screen](docs/home.png) | ![Job search screen](docs/jobs.png) |
 
----
+| People search | Favorites |
+| --- | --- |
+| ![People search screen](docs/people-search.png) | ![Favorites screen](docs/favorites.png) |
 
-## ✨ Creativity & Learning Highlights
+| Analytics | Genome |
+| --- | --- |
+| ![Analytics screen](docs/analytics.png) | ![Genome screen](docs/genome.png) |
 
-- Added a genome explorer to show user insights from the Torre API.
-- Used `Set`, `Map` and Mongoose indexes to prevent duplicates in both frontend and backend.
-- Created a searchable analytics section using MongoDB aggregation.
-- Used Framer Motion for a delightful UI interaction experience.
+## Project Structure
 
----
+```text
+backend/
+  src/
+    controllers/
+    middlewares/
+    models/
+    routes/
+    services/
+    validators/
+  __tests__/
 
-## 🧱 Challenges Faced
+torre-frontend/
+  src/
+    layouts/
+    pages/
+    services/
+    hooks/
+    i18n/
+```
 
-- Understanding deeply nested and unstructured Torre API data.
-- Handling CORS when dealing with cross-origin requests.
-- Preventing duplication in MongoDB without using user login.
-- Managing environment variables for clean deployment.
+## Environment
 
----
+Backend `.env`:
 
-#  Explaining the Project
-<h1>✅ What was built? Why did I decide to build this?</h1>
+```env
+PORT=3001
+MONGO_URI=your_mongodb_connection_string
+FRONTEND_URL=http://localhost:5173
+```
 
-I built a full-stack application to interact with the Torre APIs.
-It allows users to:
+Frontend `.env`:
 
-🔍 Search for job opportunities and people based on skills or keywords.
+```env
+VITE_BACKEND_URL=http://localhost:3001
+```
 
-⭐ Favorite profiles or jobs.
+For local development, set `VITE_BACKEND_URL` to `http://localhost:3001`. For deployment, point it to the Render backend URL.
+Use the committed `.env.example` files as templates. Real `.env` files are ignored and should stay local.
 
-🧬 View genome information of any Torre user.
+## Security Notes
 
-📊 Analyze the most searched terms using basic analytics.
+- `MONGO_URI` must be provided through environment variables only. Do not commit real `.env` files or database credentials.
+- For local development, put `MONGO_URI` in `backend/.env`.
+- For Render, set `MONGO_URI` in the service environment variables panel.
+- Use a strong MongoDB Atlas database-user password. Generate a long random password, update it in Atlas, then update both local `backend/.env` and Render's `MONGO_URI`.
+- Restrict MongoDB Atlas Network Access when possible. `0.0.0.0/0` is convenient for demos, but a narrower allowlist is safer for production.
+- If a credential was ever committed, rotate it immediately. Cleaning Git history with BFG Repo-Cleaner or `git filter-repo` is ideal, but a rotated/dead credential is the critical security fix.
 
-I chose this approach to showcase real-world full-stack features: integration with public APIs, persistent data storage (MongoDB), UI feedback, and analytics – while keeping the app simple and clean.
-
-# 🧱 How is the project structured and architected?
-Back-end (Node.js + Express + MongoDB):
-
-routes/torreRoutes.js: Handles all API endpoints.
-
-controllers/torreController.js: Core logic for favorites, search logging, analytics, and genome retrieval.
-
-models/Favorite.js and models/SearchLog.js: MongoDB schemas with validation and uniqueness enforcement.
-
-MongoDB Aggregation: Used to implement search term analytics.
-
-Front-end (React + Vite + TailwindCSS):
-
-SearchPeople.jsx: Profile deduplication, favorite button with alert.
-
-FavoritesPage.jsx: Organized rendering of jobs and profiles separately.
-
-GenomePage.jsx: Fetches genome data from the API directly.
-
-App.jsx: Clean routing for all main views.
-
-Framer Motion: Adds animations to buttons and cards.
-
-TailwindCSS: Used for responsive and modern UI design.
-
-# 🧩 Is there anything I would like to improve?
-
-Yes, some areas that could be improved with more time:
-
-Given more time, I would have Added Vercel deployment for live demos and faster hosting
-
-Add authentication (JWT) to handle real user sessions.
-
-Implement infinite scroll or better pagination in search results.
-
-Create charts to visualize analytics (e.g., with Recharts or Chart.js).
-
-Improve UI/UX with smoother transitions and loading skeletons.
-
-Add unit and integration tests for both front-end and back-end.
-
-
-# MORE INFORMATION
-
-<h1>complete readme</h1>
-
-[readme backend](../backend/readme.md)
-
-[readme frontend](../torre-frontend/README.md)
-
-
-## 🚀 How to Run Locally!
+## Run Locally
 
 ```bash
-# Clone the repo
-git clone https://github.com/ThallesLima3301/Torre_Engineering-test_technician.git
-cd Torre_Engineering-test_technician
-
-# Backend
 cd backend
 npm install
 npm run dev
+```
 
-# Frontend
-cd ../torre-frontend
+```bash
+cd torre-frontend
 npm install
 npm run dev
+```
+
+Open the frontend at `http://localhost:5173`.
+
+## Verification
+
+Backend tests:
+
+```bash
+cd backend
+npm test
+```
+
+Frontend checks:
+
+```bash
+cd torre-frontend
+npm run lint
+npm run build
+```
+
+Current verification from this workspace:
+- Backend: 5 test suites passed, 10 tests passed
+- Frontend: lint passed
+- Frontend: production build passed
+
+## CI
+
+GitHub Actions runs on pushes and pull requests to `main`:
+
+- Backend: `npm ci` and `npm test`
+- Frontend: `npm ci`, `npm run lint`, and `npm run build`
+
+Workflow file: `.github/workflows/ci.yml`.
+
+## Deployment Notes
+
+Backend on Render:
+- Set `MONGO_URI` as a Render environment variable.
+- Set `FRONTEND_URL` or `FRONTEND_URLS` to the deployed Vercel frontend domain.
+- Keep the local `backend/.env` out of Git.
+
+Frontend on Vercel:
+- Set `VITE_BACKEND_URL` to the Render backend URL.
+- The project includes `torre-frontend/vercel.json` so React Router routes rewrite to `index.html`.
+
+## API Summary
+
+| Method | Endpoint | Purpose |
+| --- | --- | --- |
+| `POST` | `/api/torre/jobs` | Search job opportunities by `term`, `offset`, and `limit` |
+| `POST` | `/api/torre/search` | Search people/profiles by text |
+| `GET` | `/api/torre/genome/:username` | Fetch a public Torre genome profile |
+| `POST` | `/api/torre/favorites` | Save a job or profile favorite |
+| `GET` | `/api/torre/favorites` | List favorites by `userId` and optional `type` |
+| `DELETE` | `/api/torre/favorites/:id` | Remove a favorite |
+| `GET` | `/api/torre/analytics` | Return top searched terms |
+
+## Recent Quality Improvements
+
+- Fixed frontend/backend job search contract mismatch.
+- Removed broken encoded UI text and standardized visible copy.
+- Added job favorites to match the stated requirements.
+- Added useful empty/loading/error states across the frontend.
+- Fixed duplicate CORS configuration and i18n path.
+- Added security headers with Helmet.
+- Added a unique MongoDB favorite index.
+- Updated backend tests for jobs, favorites, analytics, validation, and health/version routes.
+
+## Future Improvements
+
+- Add real authentication instead of the current `guest` user.
+- Add frontend component tests and end-to-end tests.
+- Add caching for Torre search responses.
+- Add deployment URLs and screenshots when the final hosted frontend is available.

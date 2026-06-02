@@ -19,7 +19,7 @@ const options = {
       },
     ],
   },
-  apis: ['./routes/torreRoutes.js'], // path relativo ao arquivo de rotas
+  apis: ['./routes/torreRoutes.js'],
 };
 
 const swaggerSpec = swaggerJSDoc(options);

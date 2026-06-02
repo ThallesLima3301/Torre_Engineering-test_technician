@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon src/index.js",
-    "test": "jest --detectOpenHandles --forceExit"
+    "test": "node ./node_modules/jest/bin/jest.js --detectOpenHandles --forceExit"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +17,7 @@
     "express": "^5.1.0",
     "express-rate-limit": "^7.5.0",
     "express-validator": "^7.2.1",
+    "helmet": "^8.2.0",
     "i18n": "^0.15.1",
     "mongoose": "^8.15.1",
     "nodemon": "^3.1.10",

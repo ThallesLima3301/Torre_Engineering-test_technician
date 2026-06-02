@@ -1,7 +1,7 @@
 const Footer = () => {
   return (
-    <footer className="bg-gray-100 text-center text-sm text-gray-600 py-4 mt-12 border-t">
-      <p>&copy; {new Date().getFullYear()} Torre Challenge - Developed by Thalles Lima</p>
+    <footer className="border-t border-gray-200 bg-white py-4 text-center text-sm text-gray-500 dark:border-gray-800 dark:bg-gray-950 dark:text-gray-400">
+      <p>&copy; {new Date().getFullYear()} Torre Explorer - Technical test by Thalles Lima</p>
     </footer>
   );
 };

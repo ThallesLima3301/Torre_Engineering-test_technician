@@ -1,30 +1,24 @@
-// src/services/favoriteService.js
-
 const Favorite = require('../models/Favorite');
 
-// 🔍 Check for duplicate favorite
 async function isDuplicateFavorite({ userId, itemId, type }) {
-  return await Favorite.findOne({ userId, itemId, type });
+  return Favorite.findOne({ userId, itemId, type });
 }
 
-// ✅ Create a new favorite
 async function createFavorite(data) {
-  return await Favorite.create(data);
+  return Favorite.create(data);
 }
 
-// 📄 Get all favorites matching query
 async function findFavorites(query) {
-  return await Favorite.find(query);
+  return Favorite.find(query).sort({ createdAt: -1 });
 }
 
-// 🗑️ Delete favorite by ID
 async function deleteFavoriteById(id) {
-  return await Favorite.findByIdAndDelete(id);
+  return Favorite.findByIdAndDelete(id);
 }
 
 module.exports = {
   isDuplicateFavorite,
   createFavorite,
   findFavorites,
-  deleteFavoriteById, // ✅ Nome agora está certo
+  deleteFavoriteById,
 };

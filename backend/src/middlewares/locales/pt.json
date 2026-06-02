@@ -1,8 +1,8 @@
 {
   "errors": {
     "internal": "Erro interno do servidor",
-    "notFound": "Recurso não encontrado",
-    "duplicate": "Este item já foi favoritado.",
+    "notFound": "Recurso nao encontrado",
+    "duplicate": "Este item ja foi favoritado.",
     "saveFavorite": "Erro ao salvar favorito.",
     "fetchFavorites": "Erro ao buscar favoritos.",
     "removeFavorite": "Erro ao remover favorito.",

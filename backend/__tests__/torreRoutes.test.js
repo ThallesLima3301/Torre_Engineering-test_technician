@@ -1,9 +1,7 @@
-// backend/__tests__/torreRoutes.test.js
-
 jest.mock('../src/models/Search', () => ({
   aggregate: jest.fn().mockResolvedValue([
-    { _id: 'developer', total: 5 },
-    { _id: 'designer', total: 3 }
+    { _id: 'developer', count: 5 },
+    { _id: 'designer', count: 3 },
   ]),
 }));
 
@@ -20,12 +18,13 @@ describe('GET /api/torre/analytics', () => {
     app.use('/api/torre', torreRoutes);
   });
 
-  it('should return aggregated search terms', async () => {
+  it('returns aggregated search terms', async () => {
     const res = await request(app).get('/api/torre/analytics');
+
     expect(res.statusCode).toBe(200);
-    expect(res.body).toEqual(expect.arrayContaining([
-      expect.objectContaining({ _id: 'developer' }),
-      expect.objectContaining({ total: 5 }),
-    ]));
+    expect(res.body).toEqual([
+      { _id: 'developer', count: 5 },
+      { _id: 'designer', count: 3 },
+    ]);
   });
 });

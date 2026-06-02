@@ -1,24 +1,23 @@
-// src/routes/torreRoutes.js
-// ✅ Handles all main API routes related to Torre functionalities
-
 const express = require('express');
 const router = express.Router();
 const torreController = require('../controllers/torreController');
-const { validateFavorite, validateJobSearch } = require('../validators/torreValidator');
+const {
+  validateFavorite,
+  validateGenome,
+  validateJobSearch,
+  validateSearch,
+} = require('../validators/torreValidator');
 const validate = require('../middlewares/validate');
 
-// 🔍 Search routes
-router.post('/search', torreController.search);                            // Search for people/entities
-router.get('/genome/:username', torreController.genome);                   // Get user genome (profile)
-router.post('/jobs', validateJobSearch, validate, torreController.jobs);   // Search for job opportunities
-router.get('/currencies', torreController.currencies);                     // Get list of currencies (optional)
+router.post('/search', validateSearch, validate, torreController.search);
+router.get('/genome/:username', validateGenome, validate, torreController.genome);
+router.post('/jobs', validateJobSearch, validate, torreController.jobs);
+router.get('/currencies', torreController.currencies);
 
-// ⭐ Favorites
-router.post('/favorites', validateFavorite, validate, torreController.saveFavorite); // Save a favorite
-router.get('/favorites', torreController.getFavorites);                    // Get favorites (by userId/type)
-router.delete('/favorites/:id', torreController.removeFavorite);           // Remove a favorite by ID
+router.post('/favorites', validateFavorite, validate, torreController.saveFavorite);
+router.get('/favorites', torreController.getFavorites);
+router.delete('/favorites/:id', torreController.removeFavorite);
 
-// 📊 Analytics
-router.get('/analytics', torreController.getSearchAnalytics);              // Get top searched terms
+router.get('/analytics', torreController.getSearchAnalytics);
 
 module.exports = router;

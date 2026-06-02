@@ -1,40 +1,26 @@
+# AI Assistance Log
 
----
+AI tools were used as development support for architecture, implementation ideas, debugging, and documentation. Final decisions, code integration, and verification were performed in this repository.
 
-### 📄 `PROMPTS.md`
+## Tools Mentioned During Development
 
-```markdown
-# AI Prompts Used (ChatGPT - GPT-4o &&  DeepSeek-V3)
+- ChatGPT / GPT-4o
+- DeepSeek-V3
+- Codex
 
-## Tool: ChatGPT, DeepSeek
-## Model: GPT-4o, DeepSeek-V3
+## Prompt Themes
 
----
+1. Build a Node.js API with Express and MongoDB for favorites and analytics.
+2. Prevent duplicate favorites using `userId`, `itemId`, and `type`.
+3. Create responsive React and Tailwind CSS search grids.
+4. Add user feedback for successful and duplicate favorites.
+5. Understand how to fetch public Torre genome data by username.
+6. Write professional README documentation for a full-stack technical test.
+7. Improve scoring gaps from the technical assessment by fixing frontend usability, backend/frontend contracts, automated tests, and deliverables.
+8. Migrate frontend server state to TanStack Query for cached searches, mutations, and favorites invalidation.
 
-### 1. Create backend with MongoDB + Express
-Prompt: "Help me build a Node.js API with Express and MongoDB with endpoints for favorites and analytics."
+## Verification Added After AI-Assisted Work
 
----
-
-### 2. Prevent duplicate entries in MongoDB
-Prompt: "How can I ensure that MongoDB doesn't allow duplicate items based on userId and itemId?"
-
----
-
-### 3. Responsive layout using TailwindCSS
-Prompt: "Create a responsive React + TailwindCSS search grid that adjusts from 1 to 3 columns."
-
----
-
-### 4. Show feedback when favoriting
-Prompt: "Add simple alert messages to notify users when an item is favorited or already exists."
-
----
-
-### 5. How genome API from Torre works
-Prompt: "Explain how the Torre genome API works to fetch user data by username."
-
----
-
-### 6. Generate professional README.md
-Prompt: "Write a professional README.md in English for a full-stack Torre technical test project."
+- Backend Jest/Supertest route tests.
+- Frontend lint validation.
+- Frontend production build validation.

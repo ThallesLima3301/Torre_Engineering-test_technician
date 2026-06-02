@@ -1,20 +1,20 @@
 const Search = require('../models/Search');
 
-// Salva termo de busca no banco
 async function logSearch(term, type) {
-  return await Search.create({ term, type });
+  const normalizedTerm = term?.trim().toLowerCase();
+  if (!normalizedTerm) return null;
+  return Search.create({ term: normalizedTerm, type });
 }
 
-// Retorna os termos mais buscados, com limite customizável
 async function getTopSearchedTerms(limit = 10) {
-  return await Search.aggregate([
+  return Search.aggregate([
     { $group: { _id: '$term', count: { $sum: 1 } } },
     { $sort: { count: -1 } },
-    { $limit: limit }
+    { $limit: limit },
   ]);
 }
 
 module.exports = {
   logSearch,
-  getTopSearchedTerms
+  getTopSearchedTerms,
 };

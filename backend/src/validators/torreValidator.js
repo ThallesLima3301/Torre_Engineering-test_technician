@@ -1,27 +1,30 @@
-// src/validators/torreValidator.js
 const { body, param } = require('express-validator');
 
 const validateFavorite = [
-  body('userId').notEmpty().withMessage('userId é obrigatório'),
-  body('itemId').notEmpty().withMessage('itemId é obrigatório'),
-  body('type').isIn(['job', 'profile']).withMessage('type deve ser job ou profile'),
-  body('data').notEmpty().withMessage('data é obrigatório'),
+  body('userId').trim().notEmpty().withMessage('userId is required'),
+  body('itemId').trim().notEmpty().withMessage('itemId is required'),
+  body('type').isIn(['job', 'profile']).withMessage('type must be job or profile'),
+  body('data').isObject().withMessage('data must be an object'),
 ];
 
 const validateJobSearch = [
-  body('term').notEmpty().withMessage('term é obrigatório'),
-  body('offset').optional().isInt({ min: 0 }).withMessage('offset deve ser um inteiro >= 0'),
-  body('limit').optional().isInt({ min: 1 }).withMessage('limit deve ser >= 1'),
+  body().custom((_, { req }) => {
+    const term = req.body.term || req.body.criteria?.text;
+    if (typeof term === 'string' && term.trim()) return true;
+    throw new Error('term is required');
+  }),
+  body('term').optional().isString().trim(),
+  body('criteria.text').optional().isString().trim(),
+  body('offset').optional().isInt({ min: 0 }).withMessage('offset must be an integer >= 0').toInt(),
+  body('limit').optional().isInt({ min: 1, max: 50 }).withMessage('limit must be between 1 and 50').toInt(),
 ];
 
-// ✅ Nova validação para busca de perfis
 const validateSearch = [
-  body('text').optional().isString().withMessage('text deve ser uma string'),
+  body('text').optional().isString().trim().withMessage('text must be a string'),
 ];
 
-// ✅ Nova validação para username no genome
 const validateGenome = [
-  param('username').notEmpty().withMessage('username é obrigatório'),
+  param('username').trim().notEmpty().withMessage('username is required'),
 ];
 
 module.exports = {

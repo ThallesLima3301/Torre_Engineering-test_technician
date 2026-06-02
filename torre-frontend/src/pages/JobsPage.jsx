@@ -1,86 +1,209 @@
-// src/pages/JobsPage.jsx
-import { useEffect, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { searchJobs } from '../services/torreService';
+import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { addFavorite, searchJobs } from '../services/torreService';
+
+const LIMIT = 10;
+
+const getUniqueJobs = (items) => (
+  Array.from(new Map(items.map((job) => [job.id || job._id || job.objective, job])).values())
+);
 
 const JobsPage = () => {
-  const [jobs, setJobs] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [offset, setOffset] = useState(0);
-  const [hasMore, setHasMore] = useState(true);
-  const limit = 10;
+  const [query, setQuery] = useState('developer');
+  const [activeTerm, setActiveTerm] = useState('developer');
+  const [message, setMessage] = useState('');
+  const [favoritedJobIds, setFavoritedJobIds] = useState(new Set());
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
-  const loadJobs = async () => {
-    setLoading(true);
-    try {
-      const res = await searchJobs({ text: 'developer' }, limit, offset);
-      const data = Array.isArray(res.data) ? res.data : res.data.results || [];
+  const jobsQuery = useInfiniteQuery({
+    queryKey: ['jobs', activeTerm],
+    queryFn: async ({ pageParam = 0 }) => {
+      const res = await searchJobs(activeTerm, LIMIT, pageParam);
+      return res.data;
+    },
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, pages) => (
+      (lastPage.results || []).length === LIMIT ? pages.length * LIMIT : undefined
+    ),
+  });
 
-      if (data.length < limit) setHasMore(false);
+  const favoriteMutation = useMutation({
+    mutationFn: (job) => addFavorite('guest', 'job', job),
+    onSuccess: (_, job) => {
+      const jobId = job.id || job._id || job.objective;
+      setFavoritedJobIds((prev) => new Set(prev).add(jobId));
+      setMessage('Job saved to favorites.');
+      queryClient.invalidateQueries({ queryKey: ['favorites', 'guest'] });
+      window.setTimeout(() => setMessage(''), 3000);
+    },
+    onError: (err) => {
+      setMessage(err.response?.data?.message || 'Could not save this job.');
+      window.setTimeout(() => setMessage(''), 3000);
+    },
+  });
 
-      // 🔍 Deduplicar vagas pelo id
-      const combined = [...jobs, ...data];
-      const uniqueJobs = Array.from(new Map(combined.map(job => [job.id, job])).values());
+  const jobs = useMemo(() => (
+    getUniqueJobs(jobsQuery.data?.pages.flatMap((page) => page.results || []) || [])
+  ), [jobsQuery.data]);
 
-      setJobs(uniqueJobs);
-    } catch (err) {
-      console.error('❌ Error fetching jobs:', err);
-    } finally {
-      setLoading(false);
-    }
+  const handleSearch = (event) => {
+    event.preventDefault();
+    const searchTerm = query.trim();
+    if (!searchTerm) return;
+    setActiveTerm(searchTerm);
   };
 
-  useEffect(() => {
-    loadJobs();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [offset]);
+  const handleFavorite = (job) => {
+    const jobId = job.id || job._id || job.objective;
 
-  const handleLoadMore = () => {
-    if (!loading && hasMore) {
-      setOffset(prev => prev + limit);
+    if (favoritedJobIds.has(jobId)) {
+      setMessage('This job is already in favorites.');
+      window.setTimeout(() => setMessage(''), 3000);
+      return;
     }
+
+    favoriteMutation.mutate(job);
   };
+
+  const isInitialLoading = jobsQuery.isLoading;
+  const isSearching = jobsQuery.isFetching && !jobsQuery.isFetchingNextPage;
+  const errorMessage = jobsQuery.error
+    ? 'Could not load jobs. Check the backend connection and try again.'
+    : '';
 
   return (
-    <div className="p-6 max-w-5xl mx-auto text-gray-900 dark:text-white bg-white dark:bg-gray-900 min-h-screen">
-      <h2 className="text-2xl font-bold mb-4">💼 Job Openings</h2>
+    <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
+      <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+        <div>
+          <p className="text-sm font-semibold uppercase tracking-wide text-blue-600 dark:text-blue-300">
+            Opportunities
+          </p>
+          <h1 className="mt-2 text-3xl font-bold text-gray-950 dark:text-white">
+            Job search
+          </h1>
+          <p className="mt-2 max-w-2xl text-gray-600 dark:text-gray-300">
+            Search Torre opportunities, inspect details, and save roles for later review.
+          </p>
+        </div>
 
-      {jobs.length === 0 && !loading && <p>No vacancies found.</p>}
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-        {jobs.map((job, index) => (
-          <div
-            key={`${job.id}-${index}`} // ✅ Garante chave única
-            onClick={() => navigate(`/job/${job.id}`, { state: job })}
-            className="bg-white dark:bg-gray-800 shadow p-4 rounded cursor-pointer hover:shadow-lg transition"
+        <form onSubmit={handleSearch} className="flex w-full gap-2 sm:w-auto">
+          <label className="sr-only" htmlFor="job-search">Search jobs</label>
+          <input
+            id="job-search"
+            type="search"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="developer, design, sales..."
+            className="min-w-0 flex-1 rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-950 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:border-gray-700 dark:bg-gray-900 dark:text-white"
+          />
+          <button
+            type="submit"
+            disabled={isSearching}
+            className="rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            <h3 className="text-lg font-semibold">{job.objective}</h3>
-            <p className="text-gray-600 dark:text-gray-400 mb-1">{job.tagline}</p>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
-              Tipo: {job.type?.replace(/-/g, ' ') || 'Não informado'}
-            </p>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
-              Local: {job.locations?.join(', ') || 'Remoto'}
-            </p>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              Empresa: {job.organizations?.[0]?.name || 'Desconhecida'}
-            </p>
-          </div>
-        ))}
+            {isSearching ? 'Searching' : 'Search'}
+          </button>
+        </form>
       </div>
 
-      {loading && <p className="mt-4">🔄 Loading jobs...</p>}
-
-      {hasMore && !loading && (
-        <button
-          onClick={handleLoadMore}
-          className="mt-6 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-        >
-          Load more
-        </button>
+      {message && (
+        <p className="mb-4 rounded-md border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-800 dark:border-blue-900 dark:bg-blue-950 dark:text-blue-100">
+          {message}
+        </p>
       )}
-    </div>
+
+      {errorMessage && (
+        <p className="mb-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-100">
+          {errorMessage}
+        </p>
+      )}
+
+      {!isInitialLoading && jobs.length === 0 ? (
+        <div className="rounded-lg border border-dashed border-gray-300 bg-white p-10 text-center dark:border-gray-700 dark:bg-gray-900">
+          <h2 className="text-lg font-semibold text-gray-950 dark:text-white">No jobs found</h2>
+          <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
+            Try another term or refresh the backend connection.
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          {jobs.map((job, index) => {
+            const jobId = job.id || job._id || `${job.objective}-${index}`;
+            const organization = job.organizations?.[0]?.name || 'Company not informed';
+            const location = job.locations?.join(', ') || 'Remote or not informed';
+
+            return (
+              <article
+                key={jobId}
+                className="rounded-lg border border-gray-200 bg-white p-5 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:border-gray-800 dark:bg-gray-900"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <h2 className="text-lg font-semibold text-gray-950 dark:text-white">
+                      {job.objective || 'Untitled role'}
+                    </h2>
+                    <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">
+                      {organization}
+                    </p>
+                  </div>
+                  <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700 dark:bg-gray-800 dark:text-gray-200">
+                    {job.type?.replace(/-/g, ' ') || 'role'}
+                  </span>
+                </div>
+
+                {job.tagline && (
+                  <p className="mt-4 line-clamp-3 text-sm leading-6 text-gray-600 dark:text-gray-300">
+                    {job.tagline}
+                  </p>
+                )}
+
+                <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-sm text-gray-500 dark:text-gray-400">
+                  <span>{location}</span>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => navigate(`/job/${jobId}`, { state: job })}
+                      className="rounded-md bg-blue-600 px-3 py-1.5 font-medium text-white transition hover:bg-blue-700"
+                    >
+                      Details
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleFavorite(job)}
+                      disabled={favoritedJobIds.has(jobId) || favoriteMutation.isPending}
+                      className="rounded-md border border-gray-300 px-3 py-1.5 font-medium text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800"
+                    >
+                      {favoritedJobIds.has(jobId) ? 'Saved' : 'Save'}
+                    </button>
+                  </div>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      )}
+
+      {(isInitialLoading || jobsQuery.isFetchingNextPage) && (
+        <p className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
+          Loading jobs...
+        </p>
+      )}
+
+      {jobsQuery.hasNextPage && jobs.length > 0 && (
+        <div className="mt-8 flex justify-center">
+          <button
+            type="button"
+            onClick={() => jobsQuery.fetchNextPage()}
+            disabled={jobsQuery.isFetchingNextPage}
+            className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-800 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800"
+          >
+            Load more
+          </button>
+        </div>
+      )}
+    </section>
   );
 };
 

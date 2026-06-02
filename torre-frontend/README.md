@@ -1,89 +1,59 @@
-# Criar um arquivo README.md com o conteúdo em Markdown fornecido
+# Torre Engineering Frontend
 
-markdown_content = """
-# 💻 TorreEngineering Frontend
+React/Vite frontend for the Torre Engineering technical test.
 
-This is the frontend for the **Torre Engineering Technical Challenge v2.1**, built with **React + Vite + TailwindCSS v3.4.1**. It integrates with Torre’s public APIs and a custom backend to deliver a clean, responsive, and intuitive UI/UX.
+## Features
 
----
+- Search jobs by keyword.
+- Search people and open genome profiles.
+- Save and remove job/profile favorites.
+- View most searched terms as a simple analytics chart.
+- Cache and invalidate server state with TanStack Query.
+- Responsive navigation, dark mode, loading states, empty states, and error states.
 
-## 🚀 Overview
+## Setup
 
-A modern single-page application that allows users to:
+Create `torre-frontend/.env`:
 
-- 🔍 Search for job opportunities by keyword  
-- 👤 View user genomes (public profiles) by username  
-- ⭐ Save and manage favorite jobs and people  
-- 📊 View analytics of most searched terms  
-
-Optimized for speed, usability, and mobile-first responsiveness.
-
----
-
-## 📁 Folder Structure
-![alt text](../torre-frontend/img/image.png)
-
-![alt text](../torre-frontend/img/image_1.png)
-
----
-
-## ⚙️ Setup & Installation
-
-1. Clone the repository
-
-```bash
-git clone https://github.com/your-username/torre-frontend
-cd torre-frontend
-
-npm install
-npm install react-router-dom
+```env
+VITE_BACKEND_URL=http://localhost:3001
 ```
-Run the development server
+
+Install and run:
+
 ```bash
+npm install
 npm run dev
 ```
-Open your browser at:
 
-`http://localhost:5173`
-## 📄 Main Components & Pages
+Open `http://localhost:5173`.
 
-| File             | Description |
-|------------------|-------------|
-| `JobsPage.jsx`   | 🔍 Job search page. Contains an input to search for jobs by keyword. Connects to `POST /api/torre/jobs` and displays job cards including role, company, and location. |
-| `GenomePage.jsx` | 🧬 Genome viewer. Accepts a Torre username and fetches their genome data via `GET /api/torre/genome/:username`. Shows name, picture, strengths, weaknesses, and headline. |
-| `SearchPage.jsx` | 👥 Profile search. Dynamically extracts members from Torre job results based on a keyword. Allows favoriting profiles and shows popular search terms below (analytics). |
-| `PeoplePage.jsx` | ⭐ Favorites page. Lists all profiles favorited by the user and allows unfavoriting with a single click. |
+## Scripts
 
----
-
-## 🌐 Routing (via React Router)
-
-```jsx
-<Route path="/jobs" element={<JobsPage />} />
-<Route path="/search" element={<SearchPage />} />
-<Route path="/genome/:username" element={<GenomePage />} />
-<Route path="/people" element={<PeoplePage />} />
+```bash
+npm run lint
+npm run build
+npm run preview
 ```
 
----
+## Main Pages
 
-## 🧠 Usage Instructions
+| Route | Component | Purpose |
+| --- | --- | --- |
+| `/` | `HomePage.jsx` | App entry point with quick actions |
+| `/jobs` | `JobsPage.jsx` | Job search, pagination, and job favorites |
+| `/job/:id` | `JobDetailsPage.jsx` | Job detail view from search state |
+| `/search` | `SearchPeople.jsx` | People search, genome links, and profile favorites |
+| `/people` | `PeoplePage.jsx` | Favorites dashboard for people and jobs |
+| `/genome/:username?` | `GenomePage.jsx` | Public genome lookup |
+| `/analytics` | `AnalyticsPage.jsx` | Most searched terms chart |
 
-- Navigate to `/jobs` → Type a keyword (e.g., `"developer"`) → See job listings from Torre
-- Navigate to `/genome/:username` → Input a Torre username → View full genome data
-- Navigate to `/search` → Type a skill (e.g., `"marketing"`) → See matching profiles → Favorite them
-- Navigate to `/people` → Manage your favorite profiles (view & unfavorite)
+## API Configuration
 
-🧩 Favorites and analytics are persisted using **MongoDB** via the backend API.
+All frontend API calls go through `src/services/api.js`, which reads:
 
----
-
-## 📦 API Communication
-
-The frontend communicates with the backend at:
-
+```js
+import.meta.env.VITE_BACKEND_URL
 ```
-http://localhost:3001/api/torre
-```
 
-All Torre APIs used are **public** — no authentication required.
+If the variable is missing, it falls back to `http://localhost:3001`.

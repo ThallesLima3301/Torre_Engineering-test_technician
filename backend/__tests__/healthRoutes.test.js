@@ -1,5 +1,6 @@
 const request = require('supertest');
 const express = require('express');
+const helmet = require('helmet');
 const healthRoutes = require('../src/routes/healthRoutes');
 
 describe('Health & Version Routes', () => {
@@ -7,6 +8,10 @@ describe('Health & Version Routes', () => {
 
   beforeAll(() => {
     app = express();
+    app.use(helmet({
+      contentSecurityPolicy: false,
+      crossOriginResourcePolicy: { policy: 'cross-origin' },
+    }));
     app.use('/api', healthRoutes);
   });
 
@@ -16,6 +21,11 @@ describe('Health & Version Routes', () => {
     expect(res.body).toHaveProperty('status', 'ok');
     expect(res.body).toHaveProperty('uptime');
     expect(res.body).toHaveProperty('timestamp');
+  });
+
+  it('should include security headers', async () => {
+    const res = await request(app).get('/api/health');
+    expect(res.headers).toHaveProperty('x-content-type-options', 'nosniff');
   });
 
   it('should return app version and name', async () => {

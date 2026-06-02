@@ -1,85 +1,153 @@
-import { useState } from 'react';
-import api from '../services/api';
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { fetchGenome } from '../services/torreService';
 
 const GenomePage = () => {
-  const [username, setUsername] = useState('');
-  const [genome, setGenome] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const { username: routeUsername } = useParams();
+  const [username, setUsername] = useState(routeUsername || '');
+  const [requestedUsername, setRequestedUsername] = useState(routeUsername || '');
 
-  const fetchGenome = async () => {
-    if (!username.trim()) return;
-    setLoading(true);
-    setError('');
-    setGenome(null);
+  useEffect(() => {
+    if (routeUsername) {
+      setUsername(routeUsername);
+      setRequestedUsername(routeUsername);
+    }
+  }, [routeUsername]);
 
-    try {
-      const res = await api.get(`/api/torre/genome/${username}`);
-      setGenome(res.data);
-    } catch (err) {
-      const message =
-        err.response?.data?.message || 'Erro ao buscar perfil';
-      setError(message);
-      console.error('❌ Erro ao buscar genome:', err);
-    } finally {
-      setLoading(false);
+  const genomeQuery = useQuery({
+    queryKey: ['genome', requestedUsername],
+    queryFn: async () => {
+      const res = await fetchGenome(requestedUsername);
+      return res.data;
+    },
+    enabled: Boolean(requestedUsername),
+  });
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const nextUsername = username.trim();
+    if (nextUsername) {
+      setRequestedUsername(nextUsername);
     }
   };
 
-  return (
-    <div className="p-6 max-w-3xl mx-auto text-gray-900 dark:text-white bg-white dark:bg-gray-900 min-h-screen">
-      <h1 className="text-3xl font-bold mb-6 text-center">🔬 Search Genome</h1>
+  const genome = genomeQuery.data;
+  const person = genome?.person;
+  const strengths = genome?.strengths || [];
+  const interests = genome?.interests || [];
 
-      <div className="flex gap-4 mb-6">
-        <input
-          type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          placeholder="Enter username"
-          className="border border-gray-300 dark:border-gray-600 p-2 rounded w-full bg-white dark:bg-gray-800 dark:text-white"
-        />
-        <button
-          onClick={fetchGenome}
-          className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition"
-          disabled={loading}
-        >
-          {loading ? '🔄 Searching...' : 'Search'}
-        </button>
+  return (
+    <section className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
+      <div className="mb-6">
+        <p className="text-sm font-semibold uppercase tracking-wide text-blue-600 dark:text-blue-300">
+          Genome
+        </p>
+        <h1 className="mt-2 text-3xl font-bold text-gray-950 dark:text-white">
+          Profile genome lookup
+        </h1>
+        <p className="mt-2 max-w-2xl text-gray-600 dark:text-gray-300">
+          Fetch public Torre genome data by username and review strengths, headline, and interests.
+        </p>
       </div>
 
-      {loading && <p className="text-gray-500 dark:text-gray-400">🔄 Searching genome...</p>}
-      {error && <p className="text-red-500">❌ {error}</p>}
+      <form onSubmit={handleSubmit} className="mb-6 flex max-w-2xl gap-2">
+        <label className="sr-only" htmlFor="genome-username">Torre username</label>
+        <input
+          id="genome-username"
+          type="search"
+          value={username}
+          onChange={(event) => setUsername(event.target.value)}
+          placeholder="torre username"
+          className="min-w-0 flex-1 rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-950 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:border-gray-700 dark:bg-gray-900 dark:text-white"
+        />
+        <button
+          type="submit"
+          disabled={genomeQuery.isFetching}
+          className="rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          {genomeQuery.isFetching ? 'Searching' : 'Search'}
+        </button>
+      </form>
 
-      {genome?.person && (
-        <div className="mt-6 bg-white dark:bg-gray-800 shadow-xl rounded-lg p-6 text-left">
-          <div className="flex items-center gap-4 mb-4">
+      {genomeQuery.error && (
+        <p className="mb-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-100">
+          {genomeQuery.error.response?.data?.message || 'Could not load this genome profile.'}
+        </p>
+      )}
+
+      {genomeQuery.isLoading && (
+        <p className="text-sm text-gray-500 dark:text-gray-400">Loading genome...</p>
+      )}
+
+      {!genomeQuery.isLoading && !person && !genomeQuery.error && (
+        <div className="rounded-lg border border-dashed border-gray-300 bg-white p-10 text-center dark:border-gray-700 dark:bg-gray-900">
+          <h2 className="text-lg font-semibold text-gray-950 dark:text-white">No profile loaded</h2>
+          <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
+            Enter a username or open a profile from people search.
+          </p>
+        </div>
+      )}
+
+      {person && (
+        <article className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
             <img
-              src={genome.person.picture}
-              alt={genome.person.name}
-              className="w-16 h-16 rounded-full object-cover border"
+              src={person.picture || 'https://placehold.co/128x128?text=Profile'}
+              alt={person.name}
+              className="h-24 w-24 rounded-full object-cover"
             />
             <div>
-              <h2 className="text-xl font-bold">{genome.person.name}</h2>
-              <p className="text-gray-600 dark:text-gray-400">
-                {genome.person.professionalHeadline}
+              <h2 className="text-2xl font-bold text-gray-950 dark:text-white">
+                {person.name || 'Unnamed profile'}
+              </h2>
+              <p className="mt-1 text-gray-600 dark:text-gray-300">
+                {person.professionalHeadline || 'No headline provided.'}
               </p>
-              <p className="text-sm text-gray-400">Username: {genome.person.username}</p>
+              <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                @{person.username}
+              </p>
             </div>
           </div>
 
-          {genome.strengths?.length > 0 && (
-            <div className="mt-4">
-              <h3 className="text-lg font-semibold mb-2">Main skills</h3>
-              <ul className="list-disc ml-6 text-gray-700 dark:text-gray-300">
-                {genome.strengths.slice(0, 5).map((skill, idx) => (
-                  <li key={idx}>{skill.name}</li>
+          {strengths.length > 0 && (
+            <div className="mt-8">
+              <h3 className="text-lg font-semibold text-gray-950 dark:text-white">
+                Top strengths
+              </h3>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {strengths.slice(0, 10).map((skill) => (
+                  <span
+                    key={skill.id || skill.name}
+                    className="rounded-full bg-blue-50 px-3 py-1 text-sm font-medium text-blue-800 dark:bg-blue-950 dark:text-blue-100"
+                  >
+                    {skill.name}
+                  </span>
                 ))}
-              </ul>
+              </div>
             </div>
           )}
-        </div>
+
+          {interests.length > 0 && (
+            <div className="mt-8">
+              <h3 className="text-lg font-semibold text-gray-950 dark:text-white">
+                Interests
+              </h3>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {interests.slice(0, 8).map((interest) => (
+                  <span
+                    key={interest.id || interest.name}
+                    className="rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-700 dark:bg-gray-800 dark:text-gray-200"
+                  >
+                    {interest.name}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+        </article>
       )}
-    </div>
+    </section>
   );
 };
 
