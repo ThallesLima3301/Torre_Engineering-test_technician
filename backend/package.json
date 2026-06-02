@@ -4,6 +4,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon src/index.js",
+    "start": "node src/index.js",
     "test": "node ./node_modules/jest/bin/jest.js --detectOpenHandles --forceExit"
   },
   "keywords": [],

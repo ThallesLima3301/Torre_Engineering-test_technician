@@ -30,6 +30,19 @@ npm install
 npm run dev
 ```
 
+Production start command:
+
+```bash
+npm start
+```
+
+Render setup:
+
+- Root directory: `backend`
+- Build command: `npm install`
+- Start command: `npm start`
+- Environment variables: `MONGO_URI`, `FRONTEND_URL` or `FRONTEND_URLS`
+
 Run tests:
 
 ```bash

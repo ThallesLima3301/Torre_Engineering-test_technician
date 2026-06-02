@@ -150,12 +150,18 @@ Workflow file: `.github/workflows/ci.yml`.
 ## Deployment Notes
 
 Backend on Render:
+- Root directory: `backend`
+- Build command: `npm install`
+- Start command: `npm start`
 - Set `MONGO_URI` as a Render environment variable.
 - Set `FRONTEND_URL` or `FRONTEND_URLS` to the deployed Vercel frontend domain.
 - Optionally tune `TORRE_CACHE_TTL_MS` and `TORRE_CACHE_MAX_ITEMS` for the backend cache.
 - Keep the local `backend/.env` out of Git.
 
 Frontend on Vercel:
+- Root directory: `torre-frontend`
+- Build command: `npm run build`
+- Output directory: `dist`
 - Set `VITE_BACKEND_URL` to the Render backend URL.
 - The project includes `torre-frontend/vercel.json` so React Router routes rewrite to `index.html`.
 
