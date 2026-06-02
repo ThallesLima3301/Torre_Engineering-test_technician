@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { addFavorite, searchPeople } from '../services/torreService';
+import { ProfileCardSkeletonGrid } from '../components/LoadingSkeletons';
 
 const normalizePeople = (data) => (
   Array.from(
@@ -116,9 +117,7 @@ const SearchPeople = () => {
       )}
 
       {peopleQuery.isLoading ? (
-        <p className="mt-8 text-center text-sm text-gray-500 dark:text-gray-400">
-          {t('people.loading')}
-        </p>
+        <ProfileCardSkeletonGrid label={t('people.loading')} />
       ) : people.length === 0 ? (
         <div className="rounded-lg border border-dashed border-gray-300 bg-white p-10 text-center dark:border-gray-700 dark:bg-gray-900">
           <h2 className="text-lg font-semibold text-gray-950 dark:text-white">{t('people.emptyTitle')}</h2>

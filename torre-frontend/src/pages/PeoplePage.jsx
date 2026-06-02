@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { fetchFavorites, removeFavorite } from '../services/torreService';
+import { FavoriteCardSkeletonGrid } from '../components/LoadingSkeletons';
 
 const PeoplePage = () => {
   const [activeTab, setActiveTab] = useState('profile');
@@ -95,7 +96,7 @@ const PeoplePage = () => {
       )}
 
       {loading ? (
-        <p className="text-sm text-gray-500 dark:text-gray-400">{t('favorites.loading')}</p>
+        <FavoriteCardSkeletonGrid label={t('favorites.loading')} />
       ) : visibleFavorites.length === 0 ? (
         <div className="rounded-lg border border-dashed border-gray-300 bg-white p-10 text-center dark:border-gray-700 dark:bg-gray-900">
           <h2 className="text-lg font-semibold text-gray-950 dark:text-white">

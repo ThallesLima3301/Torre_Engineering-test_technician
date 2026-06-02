@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { fetchAnalytics } from '../services/torreService';
+import { AnalyticsSkeleton } from '../components/LoadingSkeletons';
 
 const AnalyticsPage = () => {
   const { t } = useTranslation();
@@ -40,7 +41,7 @@ const AnalyticsPage = () => {
       )}
 
       {analyticsQuery.isLoading ? (
-        <p className="text-sm text-gray-500 dark:text-gray-400">{t('analytics.loading')}</p>
+        <AnalyticsSkeleton label={t('analytics.loading')} />
       ) : terms.length === 0 ? (
         <div className="rounded-lg border border-dashed border-gray-300 bg-white p-10 text-center dark:border-gray-700 dark:bg-gray-900">
           <h2 className="text-lg font-semibold text-gray-950 dark:text-white">{t('analytics.emptyTitle')}</h2>

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { addFavorite, searchJobs } from '../services/torreService';
+import { JobCardSkeletonGrid } from '../components/LoadingSkeletons';
 
 const LIMIT = 10;
 
@@ -120,7 +121,9 @@ const JobsPage = () => {
         </p>
       )}
 
-      {!isInitialLoading && jobs.length === 0 ? (
+      {isInitialLoading ? (
+        <JobCardSkeletonGrid label={t('jobs.loading')} />
+      ) : jobs.length === 0 ? (
         <div className="rounded-lg border border-dashed border-gray-300 bg-white p-10 text-center dark:border-gray-700 dark:bg-gray-900">
           <h2 className="text-lg font-semibold text-gray-950 dark:text-white">{t('jobs.emptyTitle')}</h2>
           <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
@@ -185,10 +188,10 @@ const JobsPage = () => {
         </div>
       )}
 
-      {(isInitialLoading || jobsQuery.isFetchingNextPage) && (
-        <p className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
-          {t('jobs.loading')}
-        </p>
+      {jobsQuery.isFetchingNextPage && (
+        <div className="mt-4">
+          <JobCardSkeletonGrid label={t('jobs.loading')} count={2} />
+        </div>
       )}
 
       {jobsQuery.hasNextPage && jobs.length > 0 && (

@@ -21,6 +21,7 @@ AI tools were used as development support for architecture, implementation ideas
 9. Add Playwright E2E tests for the main jobs, people/genome, favorites, and analytics flows.
 10. Add backend caching for repeated Torre API responses to improve speed and reliability.
 11. Add a React error boundary so unexpected page errors do not crash the full frontend shell.
+12. Add loading skeletons for the main asynchronous frontend screens.
 
 ## Verification Added After AI-Assisted Work
 

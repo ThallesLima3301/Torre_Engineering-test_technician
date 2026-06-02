@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { fetchGenome } from '../services/torreService';
+import { GenomeSkeleton } from '../components/LoadingSkeletons';
 
 const GenomePage = () => {
   const { t } = useTranslation();
@@ -79,7 +80,7 @@ const GenomePage = () => {
       )}
 
       {genomeQuery.isLoading && (
-        <p className="text-sm text-gray-500 dark:text-gray-400">{t('genome.loading')}</p>
+        <GenomeSkeleton label={t('genome.loading')} />
       )}
 
       {!genomeQuery.isLoading && !person && !genomeQuery.error && (

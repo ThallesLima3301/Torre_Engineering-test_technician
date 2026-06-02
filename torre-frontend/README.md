@@ -10,7 +10,7 @@ React/Vite frontend for the Torre Engineering technical test.
 - View most searched terms as a simple analytics chart.
 - Cache and invalidate server state with TanStack Query.
 - Validate core user journeys with Playwright E2E tests.
-- Responsive navigation, dark mode, loading states, empty states, error states, and an app-level error boundary.
+- Responsive navigation, dark mode, loading skeletons, empty states, error states, and an app-level error boundary.
 
 ## Setup
 
