@@ -2,6 +2,13 @@
 
 Full-stack solution for the Torre Engineering technical test. The app lets users search Torre jobs, search people, inspect public genome data, save favorite jobs/profiles, and view search analytics.
 
+## 🚀 Live Demo
+
+- **App (frontend):** https://torre-engineering-test-technician-4.vercel.app
+- **API (backend):** https://torre-engineering-test-technician-2.onrender.com
+
+> The backend runs on Render's free tier and spins down when idle, so the **first request after inactivity can take up to ~50 seconds** to wake up. Subsequent requests are fast.
+
 ## Stack
 
 **Frontend**
