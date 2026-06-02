@@ -20,6 +20,7 @@ AI tools were used as development support for architecture, implementation ideas
 8. Migrate frontend server state to TanStack Query for cached searches, mutations, and favorites invalidation.
 9. Add Playwright E2E tests for the main jobs, people/genome, favorites, and analytics flows.
 10. Add backend caching for repeated Torre API responses to improve speed and reliability.
+11. Add a React error boundary so unexpected page errors do not crash the full frontend shell.
 
 ## Verification Added After AI-Assisted Work
 

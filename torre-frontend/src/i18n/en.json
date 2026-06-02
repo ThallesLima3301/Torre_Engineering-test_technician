@@ -17,6 +17,18 @@
     "light": "Light",
     "dark": "Dark"
   },
+  "appError": {
+    "eyebrow": "Unexpected error",
+    "title": "This screen could not be rendered.",
+    "description": "Try again or return home. The rest of the app is still available.",
+    "retry": "Try again",
+    "home": "Go home"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "description": "The page you opened does not exist in this challenge app.",
+    "home": "Go home"
+  },
   "common": {
     "search": "Search",
     "searching": "Searching",

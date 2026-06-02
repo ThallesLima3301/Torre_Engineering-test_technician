@@ -17,6 +17,18 @@
     "light": "Claro",
     "dark": "Escuro"
   },
+  "appError": {
+    "eyebrow": "Erro inesperado",
+    "title": "Esta tela não pôde ser exibida.",
+    "description": "Tente de novo ou volte para o início. O restante do app continua disponível.",
+    "retry": "Tentar de novo",
+    "home": "Ir para início"
+  },
+  "notFound": {
+    "title": "Página não encontrada",
+    "description": "A página que você abriu não existe neste app do desafio.",
+    "home": "Ir para início"
+  },
   "common": {
     "search": "Buscar",
     "searching": "Buscando",

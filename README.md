@@ -33,7 +33,7 @@ Full-stack solution for the Torre Engineering technical test. The app lets users
 - Genome lookup through `GET /api/torre/genome/:username`
 - Favorites for both jobs and profiles
 - MongoDB aggregation for most searched terms
-- Responsive UI with dark mode, empty states, loading states, and error feedback
+- Responsive UI with dark mode, empty states, loading states, error feedback, and an app-level error boundary
 - Client-side server-state caching with TanStack Query
 - Backend in-memory caching for repeated Torre API responses
 - Backend validation and targeted automated tests
@@ -193,6 +193,7 @@ Frontend on Vercel:
 - Fixed duplicate CORS configuration and i18n path.
 - Added security headers with Helmet.
 - Added Playwright E2E tests for core user flows.
+- Added an app-level React error boundary for unexpected UI failures.
 - Added bounded in-memory caching for repeated Torre API responses.
 - Added a unique MongoDB favorite index.
 - Updated backend tests for jobs, favorites, analytics, validation, and health/version routes.
