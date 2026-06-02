@@ -1,9 +1,18 @@
 const axios = require('axios');
+const {
+  clearCache,
+  getCacheStats,
+  getOrSet,
+} = require('./cacheService');
 
 const BASE_TORRE = 'https://torre.ai/api';
 const BASE_SEARCH = 'https://search.torre.co';
 const TORRE_PAGE_SIZE = 20;
 const MAX_FILTER_PAGES = 5;
+
+function cacheKey(scope, params = {}) {
+  return `torre:${scope}:${JSON.stringify(params)}`;
+}
 
 function buildSearchTerms(rawTerm) {
   const normalized = rawTerm.trim().toLowerCase();
@@ -63,15 +72,19 @@ function matchesPerson(person, searchTerms) {
 async function searchEntities(criteria = {}) {
   const term = criteria.text || '';
   const searchTerms = buildSearchTerms(term);
-  const response = await axios.post(
-    `${BASE_SEARCH}/people/_search/?offset=0&size=${TORRE_PAGE_SIZE}&aggregate=false`,
-    {},
-    {
-      headers: {
-        'Content-Type': 'application/json',
-        'User-Agent': 'Mozilla/5.0',
+  const offset = 0;
+  const response = await getOrSet(
+    cacheKey('people-page', { offset, size: TORRE_PAGE_SIZE }),
+    () => axios.post(
+      `${BASE_SEARCH}/people/_search/?offset=${offset}&size=${TORRE_PAGE_SIZE}&aggregate=false`,
+      {},
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'User-Agent': 'Mozilla/5.0',
+        },
       },
-    },
+    ),
   );
 
   const results = response.data.results || [];
@@ -79,8 +92,29 @@ async function searchEntities(criteria = {}) {
 }
 
 async function getGenome(username) {
-  const response = await axios.get(`${BASE_TORRE}/genome/bios/${username}`);
+  const normalizedUsername = username.trim();
+  const response = await getOrSet(
+    cacheKey('genome', { username: normalizedUsername.toLowerCase() }),
+    () => axios.get(`${BASE_TORRE}/genome/bios/${encodeURIComponent(normalizedUsername)}`),
+  );
   return response.data;
+}
+
+async function fetchOpportunityPage(offset) {
+  return getOrSet(
+    cacheKey('opportunities-page', { offset, size: TORRE_PAGE_SIZE }),
+    () => axios.post(
+      `${BASE_SEARCH}/opportunities/_search/?offset=${offset}&size=${TORRE_PAGE_SIZE}&aggregate=false`,
+      {},
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'User-Agent': 'Mozilla/5.0',
+          'Accept-Encoding': 'gzip, deflate, br',
+        },
+      },
+    ),
+  );
 }
 
 async function searchJobs(criteria = {}, offset = 0, limit = 10) {
@@ -93,17 +127,7 @@ async function searchJobs(criteria = {}, offset = 0, limit = 10) {
   let pagesFetched = 0;
 
   while (filteredResults.length < targetCount && pagesFetched < MAX_FILTER_PAGES) {
-    const response = await axios.post(
-      `${BASE_SEARCH}/opportunities/_search/?offset=${upstreamOffset}&size=${TORRE_PAGE_SIZE}&aggregate=false`,
-      {},
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'User-Agent': 'Mozilla/5.0',
-          'Accept-Encoding': 'gzip, deflate, br',
-        },
-      },
-    );
+    const response = await fetchOpportunityPage(upstreamOffset);
 
     upstreamTotal = response.data.total || upstreamTotal;
     const results = response.data.results || [];
@@ -138,7 +162,10 @@ async function searchJobs(criteria = {}, offset = 0, limit = 10) {
 }
 
 async function getCurrencies() {
-  const response = await axios.get(`${BASE_TORRE}/currencies`);
+  const response = await getOrSet(
+    cacheKey('currencies'),
+    () => axios.get(`${BASE_TORRE}/currencies`),
+  );
   return response.data;
 }
 
@@ -147,4 +174,6 @@ module.exports = {
   getGenome,
   searchJobs,
   getCurrencies,
+  clearTorreCache: clearCache,
+  getTorreCacheStats: getCacheStats,
 };

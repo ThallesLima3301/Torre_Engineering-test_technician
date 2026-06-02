@@ -36,7 +36,7 @@ jobs:
         run: npm test
 
   frontend:
-    name: Frontend lint and build
+    name: Frontend lint, build, and E2E
     runs-on: ubuntu-latest
 
     defaults:
@@ -57,8 +57,14 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+
       - name: Run lint
         run: npm run lint
 
       - name: Build
         run: npm run build
+
+      - name: Run E2E tests
+        run: npm run test:e2e

@@ -18,9 +18,12 @@ AI tools were used as development support for architecture, implementation ideas
 6. Write professional README documentation for a full-stack technical test.
 7. Improve scoring gaps from the technical assessment by fixing frontend usability, backend/frontend contracts, automated tests, and deliverables.
 8. Migrate frontend server state to TanStack Query for cached searches, mutations, and favorites invalidation.
+9. Add Playwright E2E tests for the main jobs, people/genome, favorites, and analytics flows.
+10. Add backend caching for repeated Torre API responses to improve speed and reliability.
 
 ## Verification Added After AI-Assisted Work
 
 - Backend Jest/Supertest route tests.
+- Frontend Playwright E2E tests.
 - Frontend lint validation.
 - Frontend production build validation.

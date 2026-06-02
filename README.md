@@ -10,6 +10,7 @@ Full-stack solution for the Torre Engineering technical test. The app lets users
 - TanStack Query
 - Tailwind CSS
 - Axios
+- Playwright E2E tests
 
 **Backend**
 - Node.js and Express
@@ -27,7 +28,9 @@ Full-stack solution for the Torre Engineering technical test. The app lets users
 - MongoDB aggregation for most searched terms
 - Responsive UI with dark mode, empty states, loading states, and error feedback
 - Client-side server-state caching with TanStack Query
+- Backend in-memory caching for repeated Torre API responses
 - Backend validation and targeted automated tests
+- Playwright E2E coverage for jobs, people/genome, favorites, and analytics flows
 
 ## Screenshots
 
@@ -73,6 +76,8 @@ Backend `.env`:
 PORT=3001
 MONGO_URI=your_mongodb_connection_string
 FRONTEND_URL=http://localhost:5173
+TORRE_CACHE_TTL_MS=300000
+TORRE_CACHE_MAX_ITEMS=100
 ```
 
 Frontend `.env`:
@@ -124,19 +129,21 @@ Frontend checks:
 cd torre-frontend
 npm run lint
 npm run build
+npm run test:e2e
 ```
 
 Current verification from this workspace:
-- Backend: 5 test suites passed, 10 tests passed
+- Backend: 5 test suites passed, 12 tests passed
 - Frontend: lint passed
 - Frontend: production build passed
+- Frontend E2E: Playwright core flows passed
 
 ## CI
 
 GitHub Actions runs on pushes and pull requests to `main`:
 
 - Backend: `npm ci` and `npm test`
-- Frontend: `npm ci`, `npm run lint`, and `npm run build`
+- Frontend: `npm ci`, Playwright browser install, `npm run lint`, `npm run build`, and `npm run test:e2e`
 
 Workflow file: `.github/workflows/ci.yml`.
 
@@ -145,6 +152,7 @@ Workflow file: `.github/workflows/ci.yml`.
 Backend on Render:
 - Set `MONGO_URI` as a Render environment variable.
 - Set `FRONTEND_URL` or `FRONTEND_URLS` to the deployed Vercel frontend domain.
+- Optionally tune `TORRE_CACHE_TTL_MS` and `TORRE_CACHE_MAX_ITEMS` for the backend cache.
 - Keep the local `backend/.env` out of Git.
 
 Frontend on Vercel:
@@ -171,12 +179,13 @@ Frontend on Vercel:
 - Added useful empty/loading/error states across the frontend.
 - Fixed duplicate CORS configuration and i18n path.
 - Added security headers with Helmet.
+- Added Playwright E2E tests for core user flows.
+- Added bounded in-memory caching for repeated Torre API responses.
 - Added a unique MongoDB favorite index.
 - Updated backend tests for jobs, favorites, analytics, validation, and health/version routes.
 
 ## Future Improvements
 
 - Add real authentication instead of the current `guest` user.
-- Add frontend component tests and end-to-end tests.
-- Add caching for Torre search responses.
+- Add frontend component tests.
 - Add deployment URLs and screenshots when the final hosted frontend is available.

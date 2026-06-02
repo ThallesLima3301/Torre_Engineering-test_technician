@@ -4,11 +4,17 @@ jest.mock('axios', () => ({
 }));
 
 const axios = require('axios');
-const { searchEntities, searchJobs } = require('../src/services/torreService');
+const {
+  clearTorreCache,
+  getGenome,
+  searchEntities,
+  searchJobs,
+} = require('../src/services/torreService');
 
 describe('torreService', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    clearTorreCache();
   });
 
   it('filters opportunity results locally and applies requested pagination', async () => {
@@ -96,5 +102,47 @@ describe('torreService', () => {
     expect(result).toEqual([
       expect.objectContaining({ username: 'ada' }),
     ]);
+  });
+
+  it('reuses cached opportunity pages for repeated job searches', async () => {
+    axios.post.mockResolvedValueOnce({
+      data: {
+        total: 1,
+        results: [
+          {
+            id: 'job1',
+            objective: 'Frontend Developer',
+            tagline: 'Build React interfaces',
+            organizations: [{ name: 'Acme' }],
+            locations: ['Remote'],
+            skills: [{ name: 'React' }],
+          },
+        ],
+      },
+    });
+
+    const firstResult = await searchJobs({ text: 'developer' }, 0, 1);
+    const secondResult = await searchJobs({ text: 'frontend' }, 0, 1);
+
+    expect(axios.post).toHaveBeenCalledTimes(1);
+    expect(firstResult.results).toEqual([expect.objectContaining({ id: 'job1' })]);
+    expect(secondResult.results).toEqual([expect.objectContaining({ id: 'job1' })]);
+  });
+
+  it('reuses cached genome responses by username', async () => {
+    axios.get.mockResolvedValueOnce({
+      data: {
+        person: {
+          username: 'alice',
+          name: 'Alice Candidate',
+        },
+      },
+    });
+
+    const firstResult = await getGenome('Alice');
+    const secondResult = await getGenome('alice');
+
+    expect(axios.get).toHaveBeenCalledTimes(1);
+    expect(firstResult).toEqual(secondResult);
   });
 });

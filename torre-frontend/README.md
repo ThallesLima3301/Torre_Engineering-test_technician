@@ -9,6 +9,7 @@ React/Vite frontend for the Torre Engineering technical test.
 - Save and remove job/profile favorites.
 - View most searched terms as a simple analytics chart.
 - Cache and invalidate server state with TanStack Query.
+- Validate core user journeys with Playwright E2E tests.
 - Responsive navigation, dark mode, loading states, empty states, and error states.
 
 ## Setup
@@ -33,6 +34,7 @@ Open `http://localhost:5173`.
 ```bash
 npm run lint
 npm run build
+npm run test:e2e
 npm run preview
 ```
 

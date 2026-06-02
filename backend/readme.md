@@ -9,6 +9,7 @@ Express API for the Torre Engineering technical test. It proxies Torre public da
 - Fetch public genome data by username.
 - Save, list, and delete job/profile favorites.
 - Aggregate most searched terms with MongoDB.
+- Cache repeated Torre API responses in memory.
 
 ## Setup
 
@@ -18,6 +19,8 @@ Create `backend/.env`:
 PORT=3001
 MONGO_URI=your_mongodb_connection_string
 FRONTEND_URL=http://localhost:5173
+TORRE_CACHE_TTL_MS=300000
+TORRE_CACHE_MAX_ITEMS=100
 ```
 
 Install and run:
@@ -57,16 +60,18 @@ For local development, set it in `backend/.env`. For Render, set the same key in
 
 - `src/routes`: HTTP route definitions and validation middleware.
 - `src/controllers`: Request orchestration and response shaping.
-- `src/services`: Torre API, favorites, and search analytics logic.
+- `src/services`: Torre API, in-memory cache, favorites, and search analytics logic.
 - `src/models`: Mongoose schemas.
 - `src/validators`: Express Validator request contracts.
 - `__tests__`: Supertest coverage for route contracts.
 
 Security middleware includes rate limiting, controlled CORS origins, request validation, and Helmet security headers.
+Torre upstream requests use a bounded in-memory TTL cache. Tune it with `TORRE_CACHE_TTL_MS` and `TORRE_CACHE_MAX_ITEMS`.
 
 ## Tests Covered
 
 - Job search contract and validation.
+- Torre service filtering and cache reuse.
 - Favorite creation and validation.
 - Search analytics response shape.
 - Health and version routes.
