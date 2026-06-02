@@ -1,16 +1,18 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { fetchFavorites, removeFavorite } from '../services/torreService';
-
-const tabs = [
-  { id: 'profile', label: 'People' },
-  { id: 'job', label: 'Jobs' },
-];
 
 const PeoplePage = () => {
   const [activeTab, setActiveTab] = useState('profile');
   const [message, setMessage] = useState('');
   const queryClient = useQueryClient();
+  const { t } = useTranslation();
+
+  const tabs = [
+    { id: 'profile', label: t('favorites.tabPeople') },
+    { id: 'job', label: t('favorites.tabJobs') },
+  ];
 
   const profilesQuery = useQuery({
     queryKey: ['favorites', 'guest', 'profile'],
@@ -32,11 +34,11 @@ const PeoplePage = () => {
     mutationFn: (favorite) => removeFavorite(favorite._id),
     onSuccess: (_, favorite) => {
       queryClient.invalidateQueries({ queryKey: ['favorites', 'guest', favorite.type] });
-      setMessage('Favorite removed.');
+      setMessage(t('favorites.removed'));
       window.setTimeout(() => setMessage(''), 3000);
     },
     onError: () => {
-      setMessage('Could not remove this favorite.');
+      setMessage(t('favorites.couldNotRemove'));
       window.setTimeout(() => setMessage(''), 3000);
     },
   });
@@ -53,13 +55,13 @@ const PeoplePage = () => {
     <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
       <div className="mb-6">
         <p className="text-sm font-semibold uppercase tracking-wide text-blue-600 dark:text-blue-300">
-          Shortlist
+          {t('favorites.eyebrow')}
         </p>
         <h1 className="mt-2 text-3xl font-bold text-gray-950 dark:text-white">
-          Favorites
+          {t('favorites.title')}
         </h1>
         <p className="mt-2 max-w-2xl text-gray-600 dark:text-gray-300">
-          Review saved Torre profiles and opportunities from the same workspace.
+          {t('favorites.subtitle')}
         </p>
       </div>
 
@@ -88,19 +90,19 @@ const PeoplePage = () => {
 
       {error && (
         <p className="mb-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-100">
-          Could not load favorites. Check the backend connection and try again.
+          {t('favorites.error')}
         </p>
       )}
 
       {loading ? (
-        <p className="text-sm text-gray-500 dark:text-gray-400">Loading favorites...</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400">{t('favorites.loading')}</p>
       ) : visibleFavorites.length === 0 ? (
         <div className="rounded-lg border border-dashed border-gray-300 bg-white p-10 text-center dark:border-gray-700 dark:bg-gray-900">
           <h2 className="text-lg font-semibold text-gray-950 dark:text-white">
-            No saved {activeTab === 'profile' ? 'people' : 'jobs'}
+            {activeTab === 'profile' ? t('favorites.emptyPeople') : t('favorites.emptyJobs')}
           </h2>
           <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
-            Save items from search results and they will appear here.
+            {t('favorites.emptyDesc')}
           </p>
         </div>
       ) : (
@@ -108,10 +110,10 @@ const PeoplePage = () => {
           {visibleFavorites.map((favorite) => {
             const data = favorite.data || {};
             const isProfile = favorite.type === 'profile';
-            const title = isProfile ? data.name || 'Unnamed profile' : data.objective || 'Untitled role';
+            const title = isProfile ? data.name || t('favorites.unnamed') : data.objective || t('favorites.untitled');
             const subtitle = isProfile
               ? `@${data.username || 'unknown'}`
-              : data.organization || 'Company not informed';
+              : data.organization || t('favorites.company');
 
             return (
               <article
@@ -138,8 +140,8 @@ const PeoplePage = () => {
 
                 <p className="mt-4 line-clamp-3 text-sm leading-6 text-gray-600 dark:text-gray-300">
                   {isProfile
-                    ? data.headline || 'No headline provided.'
-                    : data.tagline || data.locations?.join(', ') || 'No job summary provided.'}
+                    ? data.headline || t('favorites.noHeadline')
+                    : data.tagline || data.locations?.join(', ') || t('favorites.noSummary')}
                 </p>
 
                 <button
@@ -148,7 +150,7 @@ const PeoplePage = () => {
                   disabled={removeMutation.isPending}
                   className="mt-5 rounded-md border border-gray-300 px-3 py-2 text-sm font-semibold text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800"
                 >
-                  Remove
+                  {t('common.remove')}
                 </button>
               </article>
             );

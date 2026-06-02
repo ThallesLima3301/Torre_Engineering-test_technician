@@ -1,7 +1,143 @@
 {
-  "job_positions": "Vagas",
-  "search_people": "Buscar pessoas",
-  "my_genome": "Meu genoma",
-  "people": "Pessoas",
-  "analytics": "Analises"
+  "nav": {
+    "home": "Início",
+    "jobs": "Vagas",
+    "people": "Buscar pessoas",
+    "favorites": "Favoritos",
+    "genome": "Genoma",
+    "analytics": "Análises",
+    "main": "Navegação principal"
+  },
+  "header": {
+    "brand": "Torre Explorer",
+    "toggleTheme": "Alternar tema de cor",
+    "toggleLanguage": "Alternar idioma"
+  },
+  "theme": {
+    "light": "Claro",
+    "dark": "Escuro"
+  },
+  "common": {
+    "search": "Buscar",
+    "searching": "Buscando",
+    "save": "Salvar",
+    "saved": "Salvo",
+    "remove": "Remover",
+    "back": "Voltar",
+    "details": "Detalhes",
+    "genome": "Genoma",
+    "loadMore": "Carregar mais"
+  },
+  "home": {
+    "eyebrow": "Teste de Engenharia Torre",
+    "title": "Busque vagas, perfis e dados salvos da Torre em um só lugar.",
+    "subtitle": "Esta aplicação full-stack integra a busca da Torre, favoritos persistentes, consulta de genoma e análises leves, com front-end em React e back-end em Express.",
+    "startJobs": "Começar pelas vagas",
+    "searchPeople": "Buscar pessoas",
+    "cards": {
+      "jobsTitle": "Buscar vagas",
+      "jobsDesc": "Explore oportunidades da Torre com paginação e salve as vagas promissoras.",
+      "peopleTitle": "Encontrar pessoas",
+      "peopleDesc": "Busque perfis, abra genomas e mantenha uma lista de favoritos.",
+      "analyticsTitle": "Ver análises",
+      "analyticsDesc": "Veja os termos mais buscados coletados pelo back-end."
+    }
+  },
+  "jobs": {
+    "eyebrow": "Oportunidades",
+    "title": "Busca de vagas",
+    "subtitle": "Busque oportunidades da Torre, veja os detalhes e salve vagas para revisar depois.",
+    "placeholder": "developer, design, vendas...",
+    "searchLabel": "Buscar vagas",
+    "loading": "Carregando vagas...",
+    "error": "Não foi possível carregar as vagas. Verifique a conexão com o back-end e tente de novo.",
+    "emptyTitle": "Nenhuma vaga encontrada",
+    "emptyDesc": "Tente outro termo ou verifique a conexão com o back-end.",
+    "savedMsg": "Vaga salva nos favoritos.",
+    "alreadySaved": "Esta vaga já está nos favoritos.",
+    "couldNotSave": "Não foi possível salvar esta vaga.",
+    "untitled": "Vaga sem título",
+    "company": "Empresa não informada",
+    "location": "Remoto ou não informado",
+    "role": "vaga"
+  },
+  "people": {
+    "eyebrow": "Talentos",
+    "title": "Busca de pessoas",
+    "subtitle": "Busque perfis da Torre, veja dados do genoma e salve pessoas nos favoritos.",
+    "placeholder": "developer, produto, design...",
+    "searchLabel": "Buscar pessoas",
+    "loading": "Carregando perfis...",
+    "error": "Não foi possível carregar os perfis. Verifique a conexão com o back-end e tente de novo.",
+    "emptyTitle": "Nenhum perfil ainda",
+    "emptyDesc": "Faça uma busca para exibir os perfis.",
+    "savedMsg": "@{{username}} salvo nos favoritos.",
+    "alreadySaved": "@{{username}} já está nos favoritos.",
+    "couldNotSave": "Não foi possível salvar este perfil."
+  },
+  "favorites": {
+    "eyebrow": "Lista",
+    "title": "Favoritos",
+    "subtitle": "Revise os perfis e oportunidades da Torre que você salvou.",
+    "tabPeople": "Pessoas",
+    "tabJobs": "Vagas",
+    "loading": "Carregando favoritos...",
+    "error": "Não foi possível carregar os favoritos. Verifique a conexão com o back-end e tente de novo.",
+    "removed": "Favorito removido.",
+    "couldNotRemove": "Não foi possível remover este favorito.",
+    "emptyPeople": "Nenhuma pessoa salva",
+    "emptyJobs": "Nenhuma vaga salva",
+    "emptyDesc": "Salve itens dos resultados de busca e eles aparecerão aqui.",
+    "unnamed": "Perfil sem nome",
+    "untitled": "Vaga sem título",
+    "company": "Empresa não informada",
+    "noHeadline": "Sem descrição.",
+    "noSummary": "Sem resumo da vaga."
+  },
+  "genome": {
+    "eyebrow": "Genoma",
+    "title": "Consulta de genoma de perfil",
+    "subtitle": "Busque os dados públicos de genoma da Torre por nome de usuário e veja forças, descrição e interesses.",
+    "placeholder": "usuário da torre",
+    "usernameLabel": "Usuário da Torre",
+    "loading": "Carregando genoma...",
+    "error": "Não foi possível carregar este perfil de genoma.",
+    "noProfileTitle": "Nenhum perfil carregado",
+    "noProfileDesc": "Digite um nome de usuário ou abra um perfil na busca de pessoas.",
+    "strengths": "Principais forças",
+    "interests": "Interesses",
+    "unnamed": "Perfil sem nome",
+    "noHeadline": "Sem descrição."
+  },
+  "jobDetails": {
+    "unavailableTitle": "Detalhes da vaga indisponíveis",
+    "unavailableDesc": "Abra uma vaga a partir dos resultados de busca para carregar os detalhes aqui.",
+    "backToJobs": "Voltar para vagas",
+    "saveJob": "Salvar vaga",
+    "saving": "Salvando",
+    "savedMsg": "Vaga salva nos favoritos.",
+    "couldNotSave": "Não foi possível salvar esta vaga.",
+    "type": "Tipo",
+    "location": "Local",
+    "company": "Empresa",
+    "compensation": "Remuneração",
+    "details": "Detalhes",
+    "notInformed": "Não informado",
+    "noDetails": "Nenhum detalhe adicional fornecido.",
+    "untitled": "Vaga sem título"
+  },
+  "analytics": {
+    "eyebrow": "Análises",
+    "title": "Termos mais buscados",
+    "subtitle": "Os termos de busca são normalizados pelo back-end e agrupados com agregação do MongoDB.",
+    "error": "Não foi possível carregar as análises. A atividade de busca aparecerá aqui quando o back-end estiver disponível.",
+    "loading": "Carregando análises...",
+    "emptyTitle": "Ainda não há dados de busca",
+    "emptyDesc": "Faça buscas de vagas ou pessoas para gerar análises.",
+    "search": "busca",
+    "searches": "buscas"
+  },
+  "footer": {
+    "text": "Torre Explorer - Teste técnico por Thalles Lima"
+  }
 }

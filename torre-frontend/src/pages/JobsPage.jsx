@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { addFavorite, searchJobs } from '../services/torreService';
 
@@ -16,6 +17,7 @@ const JobsPage = () => {
   const [favoritedJobIds, setFavoritedJobIds] = useState(new Set());
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { t } = useTranslation();
 
   const jobsQuery = useInfiniteQuery({
     queryKey: ['jobs', activeTerm],
@@ -34,12 +36,12 @@ const JobsPage = () => {
     onSuccess: (_, job) => {
       const jobId = job.id || job._id || job.objective;
       setFavoritedJobIds((prev) => new Set(prev).add(jobId));
-      setMessage('Job saved to favorites.');
+      setMessage(t('jobs.savedMsg'));
       queryClient.invalidateQueries({ queryKey: ['favorites', 'guest'] });
       window.setTimeout(() => setMessage(''), 3000);
     },
     onError: (err) => {
-      setMessage(err.response?.data?.message || 'Could not save this job.');
+      setMessage(err.response?.data?.message || t('jobs.couldNotSave'));
       window.setTimeout(() => setMessage(''), 3000);
     },
   });
@@ -59,7 +61,7 @@ const JobsPage = () => {
     const jobId = job.id || job._id || job.objective;
 
     if (favoritedJobIds.has(jobId)) {
-      setMessage('This job is already in favorites.');
+      setMessage(t('jobs.alreadySaved'));
       window.setTimeout(() => setMessage(''), 3000);
       return;
     }
@@ -69,33 +71,31 @@ const JobsPage = () => {
 
   const isInitialLoading = jobsQuery.isLoading;
   const isSearching = jobsQuery.isFetching && !jobsQuery.isFetchingNextPage;
-  const errorMessage = jobsQuery.error
-    ? 'Could not load jobs. Check the backend connection and try again.'
-    : '';
+  const errorMessage = jobsQuery.error ? t('jobs.error') : '';
 
   return (
     <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
       <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div>
           <p className="text-sm font-semibold uppercase tracking-wide text-blue-600 dark:text-blue-300">
-            Opportunities
+            {t('jobs.eyebrow')}
           </p>
           <h1 className="mt-2 text-3xl font-bold text-gray-950 dark:text-white">
-            Job search
+            {t('jobs.title')}
           </h1>
           <p className="mt-2 max-w-2xl text-gray-600 dark:text-gray-300">
-            Search Torre opportunities, inspect details, and save roles for later review.
+            {t('jobs.subtitle')}
           </p>
         </div>
 
         <form onSubmit={handleSearch} className="flex w-full gap-2 sm:w-auto">
-          <label className="sr-only" htmlFor="job-search">Search jobs</label>
+          <label className="sr-only" htmlFor="job-search">{t('jobs.searchLabel')}</label>
           <input
             id="job-search"
             type="search"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="developer, design, sales..."
+            placeholder={t('jobs.placeholder')}
             className="min-w-0 flex-1 rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-950 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:border-gray-700 dark:bg-gray-900 dark:text-white"
           />
           <button
@@ -103,7 +103,7 @@ const JobsPage = () => {
             disabled={isSearching}
             className="rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {isSearching ? 'Searching' : 'Search'}
+            {isSearching ? t('common.searching') : t('common.search')}
           </button>
         </form>
       </div>
@@ -122,17 +122,17 @@ const JobsPage = () => {
 
       {!isInitialLoading && jobs.length === 0 ? (
         <div className="rounded-lg border border-dashed border-gray-300 bg-white p-10 text-center dark:border-gray-700 dark:bg-gray-900">
-          <h2 className="text-lg font-semibold text-gray-950 dark:text-white">No jobs found</h2>
+          <h2 className="text-lg font-semibold text-gray-950 dark:text-white">{t('jobs.emptyTitle')}</h2>
           <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
-            Try another term or refresh the backend connection.
+            {t('jobs.emptyDesc')}
           </p>
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {jobs.map((job, index) => {
             const jobId = job.id || job._id || `${job.objective}-${index}`;
-            const organization = job.organizations?.[0]?.name || 'Company not informed';
-            const location = job.locations?.join(', ') || 'Remote or not informed';
+            const organization = job.organizations?.[0]?.name || t('jobs.company');
+            const location = job.locations?.join(', ') || t('jobs.location');
 
             return (
               <article
@@ -142,14 +142,14 @@ const JobsPage = () => {
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <h2 className="text-lg font-semibold text-gray-950 dark:text-white">
-                      {job.objective || 'Untitled role'}
+                      {job.objective || t('jobs.untitled')}
                     </h2>
                     <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">
                       {organization}
                     </p>
                   </div>
                   <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700 dark:bg-gray-800 dark:text-gray-200">
-                    {job.type?.replace(/-/g, ' ') || 'role'}
+                    {job.type?.replace(/-/g, ' ') || t('jobs.role')}
                   </span>
                 </div>
 
@@ -167,7 +167,7 @@ const JobsPage = () => {
                       onClick={() => navigate(`/job/${jobId}`, { state: job })}
                       className="rounded-md bg-blue-600 px-3 py-1.5 font-medium text-white transition hover:bg-blue-700"
                     >
-                      Details
+                      {t('common.details')}
                     </button>
                     <button
                       type="button"
@@ -175,7 +175,7 @@ const JobsPage = () => {
                       disabled={favoritedJobIds.has(jobId) || favoriteMutation.isPending}
                       className="rounded-md border border-gray-300 px-3 py-1.5 font-medium text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800"
                     >
-                      {favoritedJobIds.has(jobId) ? 'Saved' : 'Save'}
+                      {favoritedJobIds.has(jobId) ? t('common.saved') : t('common.save')}
                     </button>
                   </div>
                 </div>
@@ -187,7 +187,7 @@ const JobsPage = () => {
 
       {(isInitialLoading || jobsQuery.isFetchingNextPage) && (
         <p className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
-          Loading jobs...
+          {t('jobs.loading')}
         </p>
       )}
 
@@ -199,7 +199,7 @@ const JobsPage = () => {
             disabled={jobsQuery.isFetchingNextPage}
             className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-800 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800"
           >
-            Load more
+            {t('common.loadMore')}
           </button>
         </div>
       )}

@@ -14,6 +14,13 @@ i18n
       pt: { translation: pt }
     },
     fallbackLng: 'en',
+    supportedLngs: ['en', 'pt'],
+    // Normalize region variants (e.g. pt-BR -> pt) so the toggle stays in sync.
+    load: 'languageOnly',
+    detection: {
+      order: ['localStorage', 'navigator'],
+      caches: ['localStorage']
+    },
     interpolation: {
       escapeValue: false
     }

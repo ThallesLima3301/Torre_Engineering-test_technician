@@ -3,12 +3,12 @@ import { useTranslation } from 'react-i18next';
 import useDarkMode from '../hooks/useDarkMode';
 
 const navItems = [
-  { to: '/', label: 'Home' },
-  { to: '/jobs', label: 'Jobs' },
-  { to: '/search', label: 'People search' },
-  { to: '/people', label: 'Favorites' },
-  { to: '/genome', label: 'Genome' },
-  { to: '/analytics', label: 'Analytics' },
+  { to: '/', key: 'nav.home' },
+  { to: '/jobs', key: 'nav.jobs' },
+  { to: '/search', key: 'nav.people' },
+  { to: '/people', key: 'nav.favorites' },
+  { to: '/genome', key: 'nav.genome' },
+  { to: '/analytics', key: 'nav.analytics' },
 ];
 
 const linkClass = ({ isActive }) => [
@@ -19,25 +19,27 @@ const linkClass = ({ isActive }) => [
 ].join(' ');
 
 const Header = () => {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { theme, toggleTheme } = useDarkMode();
 
+  const currentLanguage = i18n.resolvedLanguage || i18n.language || 'en';
+  const isPortuguese = currentLanguage.startsWith('pt');
+
   const toggleLanguage = () => {
-    const newLang = i18n.language === 'en' ? 'pt' : 'en';
-    i18n.changeLanguage(newLang);
+    i18n.changeLanguage(isPortuguese ? 'en' : 'pt');
   };
 
   return (
     <header className="sticky top-0 z-20 border-b border-gray-200 bg-gray-50/95 backdrop-blur dark:border-gray-800 dark:bg-gray-950/95">
       <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-3 sm:px-6 lg:flex-row lg:items-center lg:justify-between">
         <NavLink to="/" className="text-lg font-bold tracking-tight text-gray-950 dark:text-white">
-          Torre Explorer
+          {t('header.brand')}
         </NavLink>
 
-        <nav className="flex flex-wrap gap-1" aria-label="Main navigation">
+        <nav className="flex flex-wrap gap-1" aria-label={t('nav.main')}>
           {navItems.map((item) => (
             <NavLink key={item.to} to={item.to} end={item.to === '/'} className={linkClass}>
-              {item.label}
+              {t(item.key)}
             </NavLink>
           ))}
         </nav>
@@ -47,17 +49,17 @@ const Header = () => {
             type="button"
             onClick={toggleTheme}
             className="rounded-md border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 transition hover:bg-white dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800"
-            aria-label="Toggle color theme"
+            aria-label={t('header.toggleTheme')}
           >
-            {theme === 'dark' ? 'Light' : 'Dark'}
+            {theme === 'dark' ? t('theme.light') : t('theme.dark')}
           </button>
           <button
             type="button"
             onClick={toggleLanguage}
             className="rounded-md border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 transition hover:bg-white dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800"
-            aria-label="Toggle language"
+            aria-label={t('header.toggleLanguage')}
           >
-            {i18n.language === 'en' ? 'PT' : 'EN'}
+            {isPortuguese ? 'EN' : 'PT'}
           </button>
         </div>
       </div>

@@ -1,7 +1,143 @@
 {
-  "job_positions": "Job positions",
-  "search_people": "Search People",
-  "my_genome": "My Genome",
-  "people": "People",
-  "analytics": "Analytics"
+  "nav": {
+    "home": "Home",
+    "jobs": "Jobs",
+    "people": "People search",
+    "favorites": "Favorites",
+    "genome": "Genome",
+    "analytics": "Analytics",
+    "main": "Main navigation"
+  },
+  "header": {
+    "brand": "Torre Explorer",
+    "toggleTheme": "Toggle color theme",
+    "toggleLanguage": "Toggle language"
+  },
+  "theme": {
+    "light": "Light",
+    "dark": "Dark"
+  },
+  "common": {
+    "search": "Search",
+    "searching": "Searching",
+    "save": "Save",
+    "saved": "Saved",
+    "remove": "Remove",
+    "back": "Back",
+    "details": "Details",
+    "genome": "Genome",
+    "loadMore": "Load more"
+  },
+  "home": {
+    "eyebrow": "Torre Engineering Test",
+    "title": "Search opportunities, profiles, and saved Torre insights in one place.",
+    "subtitle": "This full-stack app integrates Torre search data, persistent favorites, genome lookup, and lightweight analytics through a React frontend and Express backend.",
+    "startJobs": "Start with jobs",
+    "searchPeople": "Search people",
+    "cards": {
+      "jobsTitle": "Search jobs",
+      "jobsDesc": "Browse Torre opportunities with pagination and save promising roles.",
+      "peopleTitle": "Find people",
+      "peopleDesc": "Search profiles, open genomes, and keep a favorites shortlist.",
+      "analyticsTitle": "View analytics",
+      "analyticsDesc": "See the most searched terms collected by the backend."
+    }
+  },
+  "jobs": {
+    "eyebrow": "Opportunities",
+    "title": "Job search",
+    "subtitle": "Search Torre opportunities, inspect details, and save roles for later review.",
+    "placeholder": "developer, design, sales...",
+    "searchLabel": "Search jobs",
+    "loading": "Loading jobs...",
+    "error": "Could not load jobs. Check the backend connection and try again.",
+    "emptyTitle": "No jobs found",
+    "emptyDesc": "Try another term or refresh the backend connection.",
+    "savedMsg": "Job saved to favorites.",
+    "alreadySaved": "This job is already in favorites.",
+    "couldNotSave": "Could not save this job.",
+    "untitled": "Untitled role",
+    "company": "Company not informed",
+    "location": "Remote or not informed",
+    "role": "role"
+  },
+  "people": {
+    "eyebrow": "Talent",
+    "title": "People search",
+    "subtitle": "Search Torre profiles, inspect genome data, and save people to favorites.",
+    "placeholder": "developer, product, design...",
+    "searchLabel": "Search people",
+    "loading": "Loading profiles...",
+    "error": "Could not load profiles. Check the backend connection and try again.",
+    "emptyTitle": "No profiles yet",
+    "emptyDesc": "Run a search to populate profile results.",
+    "savedMsg": "@{{username}} saved to favorites.",
+    "alreadySaved": "@{{username}} is already in favorites.",
+    "couldNotSave": "Could not save this profile."
+  },
+  "favorites": {
+    "eyebrow": "Shortlist",
+    "title": "Favorites",
+    "subtitle": "Review saved Torre profiles and opportunities from the same workspace.",
+    "tabPeople": "People",
+    "tabJobs": "Jobs",
+    "loading": "Loading favorites...",
+    "error": "Could not load favorites. Check the backend connection and try again.",
+    "removed": "Favorite removed.",
+    "couldNotRemove": "Could not remove this favorite.",
+    "emptyPeople": "No saved people",
+    "emptyJobs": "No saved jobs",
+    "emptyDesc": "Save items from search results and they will appear here.",
+    "unnamed": "Unnamed profile",
+    "untitled": "Untitled role",
+    "company": "Company not informed",
+    "noHeadline": "No headline provided.",
+    "noSummary": "No job summary provided."
+  },
+  "genome": {
+    "eyebrow": "Genome",
+    "title": "Profile genome lookup",
+    "subtitle": "Fetch public Torre genome data by username and review strengths, headline, and interests.",
+    "placeholder": "torre username",
+    "usernameLabel": "Torre username",
+    "loading": "Loading genome...",
+    "error": "Could not load this genome profile.",
+    "noProfileTitle": "No profile loaded",
+    "noProfileDesc": "Enter a username or open a profile from people search.",
+    "strengths": "Top strengths",
+    "interests": "Interests",
+    "unnamed": "Unnamed profile",
+    "noHeadline": "No headline provided."
+  },
+  "jobDetails": {
+    "unavailableTitle": "Job details unavailable",
+    "unavailableDesc": "Open a job from the search results so the details can be loaded into this view.",
+    "backToJobs": "Back to jobs",
+    "saveJob": "Save job",
+    "saving": "Saving",
+    "savedMsg": "Job saved to favorites.",
+    "couldNotSave": "Could not save this job.",
+    "type": "Type",
+    "location": "Location",
+    "company": "Company",
+    "compensation": "Compensation",
+    "details": "Details",
+    "notInformed": "Not informed",
+    "noDetails": "No further details provided.",
+    "untitled": "Untitled role"
+  },
+  "analytics": {
+    "eyebrow": "Analytics",
+    "title": "Most searched terms",
+    "subtitle": "Search terms are normalized by the backend and grouped with MongoDB aggregation.",
+    "error": "Could not load analytics. Search activity will appear here once the backend is available.",
+    "loading": "Loading analytics...",
+    "emptyTitle": "No search data yet",
+    "emptyDesc": "Run job or people searches to generate analytics.",
+    "search": "search",
+    "searches": "searches"
+  },
+  "footer": {
+    "text": "Torre Explorer - Technical test by Thalles Lima"
+  }
 }

@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { addFavorite, searchPeople } from '../services/torreService';
 
@@ -21,6 +22,7 @@ const SearchPeople = () => {
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { t } = useTranslation();
 
   const peopleQuery = useQuery({
     queryKey: ['people-search', activeTerm],
@@ -34,12 +36,12 @@ const SearchPeople = () => {
     mutationFn: (person) => addFavorite('guest', 'profile', person),
     onSuccess: (_, person) => {
       setFavoritedIds((prev) => new Set(prev).add(person.username));
-      setMessage(`@${person.username} saved to favorites.`);
+      setMessage(t('people.savedMsg', { username: person.username }));
       queryClient.invalidateQueries({ queryKey: ['favorites', 'guest'] });
       window.setTimeout(() => setMessage(''), 3000);
     },
     onError: (err) => {
-      setMessage(err.response?.data?.message || 'Could not save this profile.');
+      setMessage(err.response?.data?.message || t('people.couldNotSave'));
       window.setTimeout(() => setMessage(''), 3000);
     },
   });
@@ -55,7 +57,7 @@ const SearchPeople = () => {
 
   const handleFavorite = (person) => {
     if (favoritedIds.has(person.username)) {
-      setMessage(`@${person.username} is already in favorites.`);
+      setMessage(t('people.alreadySaved', { username: person.username }));
       window.setTimeout(() => setMessage(''), 3000);
       return;
     }
@@ -64,33 +66,31 @@ const SearchPeople = () => {
   };
 
   const isSearching = peopleQuery.isFetching;
-  const errorMessage = peopleQuery.error
-    ? 'Could not load profiles. Check the backend connection and try again.'
-    : '';
+  const errorMessage = peopleQuery.error ? t('people.error') : '';
 
   return (
     <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
       <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div>
           <p className="text-sm font-semibold uppercase tracking-wide text-blue-600 dark:text-blue-300">
-            Talent
+            {t('people.eyebrow')}
           </p>
           <h1 className="mt-2 text-3xl font-bold text-gray-950 dark:text-white">
-            People search
+            {t('people.title')}
           </h1>
           <p className="mt-2 max-w-2xl text-gray-600 dark:text-gray-300">
-            Search Torre profiles, inspect genome data, and save people to favorites.
+            {t('people.subtitle')}
           </p>
         </div>
 
         <form onSubmit={handleSearch} className="flex w-full gap-2 sm:w-auto">
-          <label className="sr-only" htmlFor="people-search">Search people</label>
+          <label className="sr-only" htmlFor="people-search">{t('people.searchLabel')}</label>
           <input
             id="people-search"
             type="search"
             value={term}
             onChange={(event) => setTerm(event.target.value)}
-            placeholder="developer, product, design..."
+            placeholder={t('people.placeholder')}
             className="min-w-0 flex-1 rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-950 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:border-gray-700 dark:bg-gray-900 dark:text-white"
           />
           <button
@@ -98,7 +98,7 @@ const SearchPeople = () => {
             disabled={isSearching}
             className="rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {isSearching ? 'Searching' : 'Search'}
+            {isSearching ? t('common.searching') : t('common.search')}
           </button>
         </form>
       </div>
@@ -117,13 +117,13 @@ const SearchPeople = () => {
 
       {peopleQuery.isLoading ? (
         <p className="mt-8 text-center text-sm text-gray-500 dark:text-gray-400">
-          Loading profiles...
+          {t('people.loading')}
         </p>
       ) : people.length === 0 ? (
         <div className="rounded-lg border border-dashed border-gray-300 bg-white p-10 text-center dark:border-gray-700 dark:bg-gray-900">
-          <h2 className="text-lg font-semibold text-gray-950 dark:text-white">No profiles yet</h2>
+          <h2 className="text-lg font-semibold text-gray-950 dark:text-white">{t('people.emptyTitle')}</h2>
           <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
-            Run a search to populate profile results.
+            {t('people.emptyDesc')}
           </p>
         </div>
       ) : (
@@ -160,7 +160,7 @@ const SearchPeople = () => {
                   onClick={() => navigate(`/genome/${person.username}`)}
                   className="rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white transition hover:bg-blue-700"
                 >
-                  Genome
+                  {t('common.genome')}
                 </button>
                 <button
                   type="button"
@@ -168,7 +168,7 @@ const SearchPeople = () => {
                   disabled={favoritedIds.has(person.username) || favoriteMutation.isPending}
                   className="rounded-md border border-gray-300 px-3 py-2 text-sm font-semibold text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800"
                 >
-                  {favoritedIds.has(person.username) ? 'Saved' : 'Save'}
+                  {favoritedIds.has(person.username) ? t('common.saved') : t('common.save')}
                 </button>
               </div>
             </article>

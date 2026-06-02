@@ -1,49 +1,51 @@
 import { Link } from 'react-router-dom';
-
-const actions = [
-  {
-    to: '/jobs',
-    title: 'Search jobs',
-    description: 'Browse Torre opportunities with pagination and save promising roles.',
-  },
-  {
-    to: '/search',
-    title: 'Find people',
-    description: 'Search profiles, open genomes, and keep a favorites shortlist.',
-  },
-  {
-    to: '/analytics',
-    title: 'View analytics',
-    description: 'See the most searched terms collected by the backend.',
-  },
-];
+import { useTranslation } from 'react-i18next';
 
 const HomePage = () => {
+  const { t } = useTranslation();
+
+  const actions = [
+    {
+      to: '/jobs',
+      title: t('home.cards.jobsTitle'),
+      description: t('home.cards.jobsDesc'),
+    },
+    {
+      to: '/search',
+      title: t('home.cards.peopleTitle'),
+      description: t('home.cards.peopleDesc'),
+    },
+    {
+      to: '/analytics',
+      title: t('home.cards.analyticsTitle'),
+      description: t('home.cards.analyticsDesc'),
+    },
+  ];
+
   return (
     <section className="mx-auto grid min-h-[calc(100vh-9rem)] max-w-7xl gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[1fr_420px] lg:items-center">
       <div>
         <p className="text-sm font-semibold uppercase tracking-wide text-blue-600 dark:text-blue-300">
-          Torre Engineering Test
+          {t('home.eyebrow')}
         </p>
         <h1 className="mt-3 max-w-3xl text-4xl font-bold tracking-tight text-gray-950 dark:text-white sm:text-5xl">
-          Search opportunities, profiles, and saved Torre insights in one place.
+          {t('home.title')}
         </h1>
         <p className="mt-5 max-w-2xl text-lg leading-8 text-gray-600 dark:text-gray-300">
-          This full-stack app integrates Torre search data, persistent favorites, genome lookup,
-          and lightweight analytics through a React frontend and Express backend.
+          {t('home.subtitle')}
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
           <Link
             to="/jobs"
             className="rounded-md bg-blue-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-blue-700"
           >
-            Start with jobs
+            {t('home.startJobs')}
           </Link>
           <Link
             to="/search"
             className="rounded-md border border-gray-300 px-5 py-3 text-sm font-semibold text-gray-800 transition hover:bg-white dark:border-gray-700 dark:text-gray-100 dark:hover:bg-gray-800"
           >
-            Search people
+            {t('home.searchPeople')}
           </Link>
         </div>
       </div>
